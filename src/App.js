@@ -19,6 +19,11 @@ import {
   ShortTermLoanShow,
 } from "./Modules/ShortTermLoans";
 
+import {
+  ShortTermRepaymentCreate,
+  ShortTermRepaymentEdit,
+} from "./Modules/ShortTermRepayments";
+
 function App() {
   const [dataProvider, setDataProvider] = useState(null);
 
@@ -54,7 +59,15 @@ function App() {
         create={ShortTermLoanCreate}
         show={ShortTermLoanShow}
       />
-      <Resource name={Resources.SIFrequency} />
+      <Resource
+        name={Resources.shortTermRepayments}
+        list={ListGuesser}
+        // create={ShortTermRepaymentCreate}
+        edit={ShortTermRepaymentEdit}
+        create={ShortTermRepaymentCreate}
+        show={EditGuesser}
+      />
+      <Resource name={Resources.siFrequency} />
     </Admin>
   );
 }

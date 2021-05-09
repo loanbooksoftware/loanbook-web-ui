@@ -8,6 +8,7 @@ import {
   sanitizeListRestProps,
   ListButton,
   ShowButton,
+  EditButton,
 } from "react-admin";
 import { Link } from "react-router-dom";
 import get from "lodash/get";
@@ -21,7 +22,7 @@ export function StopEventPropagation(props) {
 }
 
 export const ListActions = (props) => {
-  const { className, exporter, filters, maxResults, ...rest } = props;
+  const { className, exporter, filters, maxResults, children, ...rest } = props;
   const {
     currentSort,
     resource,
@@ -41,6 +42,7 @@ export const ListActions = (props) => {
           filterValues,
           context: "button",
         })}
+      {children}
       <CreateButton basePath={basePath} />
       <ExportButton
         disabled={total === 0}
@@ -77,3 +79,10 @@ export const CustomerShortDetailsRenderer = ({ record, path }) => {
     </StopEventPropagation>
   );
 };
+
+export const ShowActions = ({ basePath, data, resource, children }) => (
+  <TopToolbar>
+    {children}
+    <EditButton basePath={basePath} record={data} />
+  </TopToolbar>
+);

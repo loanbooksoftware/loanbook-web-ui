@@ -40,7 +40,7 @@ export const DetailsCalculated = (props) => {
   const [siConstants, setSiConstants] = useState([]);
 
   useEffect(() => {
-    dataProvider.getList(Resources.SIFrequency, {}).then(({ data }) => {
+    dataProvider.getList(Resources.siFrequency, {}).then(({ data }) => {
       setSiConstants(data);
     });
   }, [dataProvider]);

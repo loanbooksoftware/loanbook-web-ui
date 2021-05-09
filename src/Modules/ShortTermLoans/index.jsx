@@ -1,26 +1,17 @@
-import React, { cloneElement } from "react";
+import React from "react";
 import {
-  linkToRecord,
-  useRecordContext,
   List,
   Datagrid,
   TextField,
-  useListContext,
   TopToolbar,
   CreateButton,
-  ExportButton,
-  sanitizeListRestProps,
   Filter,
-  SearchInput,
-  ListButton,
-  ShowButton,
   Create,
   Edit,
   SimpleForm,
   TextInput,
   DateInput,
   ReferenceInput,
-  AutocompleteInput,
   Show,
   SimpleShowLayout,
   NumberInput,
@@ -28,7 +19,11 @@ import {
   DateField,
   ArrayField,
   SelectInput,
+  EditButton,
+  Link,
 } from "react-admin";
+import AddIcon from "@material-ui/icons/Add";
+import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import Divider from "@material-ui/core/Divider";
 import { Resources } from "../../constants/resources";
@@ -51,7 +46,14 @@ export const ShortTermLoanList = (props) => (
     {...props}
     {...listExtraProps}
     filters={<ShortTermLoanListFilter />}
-    actions={<ListActions />}
+    actions={
+      <ListActions>
+        <CreateButton
+          basePath={`/${Resources.shortTermRepayments}`}
+          label="Repayment"
+        />
+      </ListActions>
+    }
   >
     <Datagrid rowClick="show">
       <TextField source="id" />
@@ -91,7 +93,7 @@ export const ShortTermLoanEdit = (props) => {
         <NumberInput source="principal_amount" />
         <ReferenceInput
           source="si_frequency_id"
-          reference={Resources.SIFrequency}
+          reference={Resources.siFrequency}
         >
           <SelectInput optionText="frequency" />
         </ReferenceInput>
@@ -114,7 +116,7 @@ export const ShortTermLoanCreate = (props) => {
         <NumberInput source="principal_amount" />
         <ReferenceInput
           source="si_frequency_id"
-          reference={Resources.SIFrequency}
+          reference={Resources.siFrequency}
         >
           <SelectInput optionText="frequency" />
         </ReferenceInput>
@@ -127,8 +129,37 @@ export const ShortTermLoanCreate = (props) => {
   );
 };
 
+const ShortTermRepaymentEditButton = ({ record }) => {
+  return (
+    <EditButton
+      basePath={`/${Resources.shortTermRepayments}/${record.id}`}
+      record={record}
+    />
+  );
+};
+
+export const ShowActions = ({ basePath, data, resource, children }) => (
+  <TopToolbar>
+    <Button
+      component={Link}
+      to={{
+        pathname: `/${Resources.shortTermRepayments}/create`,
+        search: `?source=${JSON.stringify({
+          short_term_loan_id: data.id,
+        })}`,
+      }}
+      size="small"
+      color="primary"
+    >
+      <AddIcon />
+      Add repayments
+    </Button>
+    <EditButton basePath={basePath} record={data} />
+  </TopToolbar>
+);
+
 export const ShortTermLoanShow = (props) => (
-  <Show {...props}>
+  <Show {...props} actions={<ShowActions />}>
     <SimpleShowLayout>
       <TextField source="id" />
       <CustomerShortDetail path="customer" label="Customer" />
@@ -176,6 +207,7 @@ export const ShortTermLoanShow = (props) => (
           <DateField label="Added on" source="date" />
           <DateField label="Installment Date" source="installment_date" />
           <NumberField source="amount" />
+          <ShortTermRepaymentEditButton />
         </Datagrid>
       </ArrayField>
     </SimpleShowLayout>

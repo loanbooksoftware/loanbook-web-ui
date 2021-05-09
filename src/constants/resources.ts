@@ -1,5 +1,6 @@
 export const Resources = {
   customers: "customers",
   shortTermLoans: "short_term_loans",
-  SIFrequency: "si_frequency",
+  siFrequency: "si_frequency",
+  shortTermRepayments: "short_term_repayments",
 };

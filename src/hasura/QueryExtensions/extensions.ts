@@ -103,6 +103,7 @@ const shortTermLoansExtensions = [
           }
         }
         short_term_repayments {
+          id
           amount
           date
           created_at
