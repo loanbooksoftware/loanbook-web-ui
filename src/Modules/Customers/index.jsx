@@ -9,7 +9,6 @@ import {
   TopToolbar,
   CreateButton,
   ExportButton,
-  // Button,
   sanitizeListRestProps,
   Filter,
   SearchInput,
@@ -20,38 +19,27 @@ import {
   SimpleForm,
   TextInput,
   DateInput,
+  Show,
+  SimpleShowLayout,
+  NumberInput,
+  NumberField,
+  DateField,
+  ArrayField,
 } from "react-admin";
-import Typography from "@material-ui/core/Typography";
 import ChevronLeft from "@material-ui/core/Icon";
 import { Link } from "react-router-dom";
 import { Resources } from "../../constants/resources";
 
-const RefererDetail = (props) => {
-  const customer = useRecordContext(props);
-  const linkToCustomer = linkToRecord(
-    `${Resources.customer}`,
-    customer.referer_details?.id,
-    "show"
-  );
+import { CustomerReferenceInput, RefererDetail } from "./components";
 
-  return (
-    <Link to={linkToCustomer}>
-      {customer?.referer_details?.first_name}{" "}
-      {customer?.referer_details?.last_name}
-    </Link>
-  );
-};
-
-const ListActions = (props) => {
+const CustomerListActions = (props) => {
   const { className, exporter, filters, maxResults, ...rest } = props;
   const {
     currentSort,
     resource,
     displayedFilters,
     filterValues,
-    // hasCreate,
     basePath,
-    // selectedIds,
     showFilter,
     total,
   } = useListContext();
@@ -77,7 +65,7 @@ const ListActions = (props) => {
   );
 };
 
-const CustomerFilter = (props) => (
+const CustomerListFilter = (props) => (
   <Filter {...props}>
     <SearchInput source="first_name" alwaysOn />
   </Filter>
@@ -86,12 +74,11 @@ const CustomerFilter = (props) => (
 export const CustomerList = (props) => (
   <List
     {...props}
-    actions={<ListActions />}
-    filters={<CustomerFilter />}
+    actions={<CustomerListActions />}
+    filters={<CustomerListFilter />}
     perPage={50}
   >
-    <Datagrid rowClick="edit">
-      <TextField source="id" />
+    <Datagrid rowClick="show">
       <TextField source="first_name" />
       <TextField source="last_name" />
       <TextField source="occupation" />
@@ -112,7 +99,25 @@ export const CustomerEdit = (props) => (
     <SimpleForm>
       <TextInput source="id" disabled />
       <TextInput source="first_name" />
+      <TextInput source="last_name" />
       <TextInput source="occupation" />
+      <NumberInput source="monthly_income" />
+      <DateInput source="date_of_birth" />
+      {/* <ReferenceInput
+        label="Reference"
+        source="reference"
+        reference="customers"
+        filterToQuery={(searchText) => ({ first_name: searchText })}
+      >
+        <AutocompleteInput
+          optionText={<CustomerSelectRenderer />}
+          inputText={(record) =>
+            `${record.first_name} ${record.last_name ?? ""}`
+          }
+          matchSuggestion={(filterValue, record) => true}
+        />
+      </ReferenceInput> */}
+      <CustomerReferenceInput />
     </SimpleForm>
   </Edit>
 );
@@ -121,7 +126,54 @@ export const CustomerCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
       <TextInput source="first_name" />
+      <TextInput source="last_name" />
       <TextInput source="occupation" />
+      <NumberInput source="monthly_income" />
+      <DateInput source="date_of_birth" />
+      <CustomerReferenceInput />
     </SimpleForm>
   </Create>
+);
+
+const ShortTermLoanLink = (props) => {
+  const loan = useRecordContext(props);
+  const linkToLoan = linkToRecord(
+    `/${Resources.shortTermLoans}`,
+    loan?.id,
+    "show"
+  );
+
+  return <Link to={linkToLoan}>{loan.id}</Link>;
+};
+
+export const CustomerShow = (props) => (
+  <Show {...props}>
+    <SimpleShowLayout>
+      <TextField source="id" />
+      <TextField source="first_name" />
+      <TextField source="last_name" />
+      <TextField source="occupation" />
+      <NumberField source="monthly_income" />
+      <DateField
+        source="date_of_birth"
+        options={{
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }}
+      />
+      <RefererDetail />
+      <ArrayField source="short_term_loans">
+        <Datagrid>
+          <DateField source="date" />
+          <TextField source="principal_amount" />
+          <TextField source="total" />
+          <TextField source="installment_amount" />
+          <TextField source="status" />
+          <ShortTermLoanLink />
+        </Datagrid>
+      </ArrayField>
+    </SimpleShowLayout>
+  </Show>
 );

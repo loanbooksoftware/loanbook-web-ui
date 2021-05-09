@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Admin, Resource, ListGuesser, EditGuesser } from "react-admin";
 import { Resources } from "./constants/resources";
-
+import PersonIcon from "@material-ui/icons/Person";
 import provider from "./hasura";
 
 import Dashboard from "./Modules/Dashboard";
@@ -10,6 +10,7 @@ import {
   CustomerList,
   CustomerEdit,
   CustomerCreate,
+  CustomerShow,
 } from "./Modules/Customers";
 import { ShortTermLoansList } from "./Modules/ShortTermLoans";
 
@@ -19,7 +20,6 @@ function App() {
   useEffect(() => {
     const buildDataProvider = async () => {
       const dataProvider = await provider();
-      console.log("dataProvider", dataProvider);
       setDataProvider(() => dataProvider);
     };
     buildDataProvider();
@@ -39,13 +39,11 @@ function App() {
         list={CustomerList}
         create={CustomerCreate}
         edit={CustomerEdit}
-
-        // list={PostList}
-        // edit={PostEdit}
-        // create={PostCreate}
+        show={CustomerShow}
+        icon={PersonIcon}
       />
       <Resource
-        name="short_term_loans"
+        name={Resources.shortTermLoans}
         list={ShortTermLoansList}
         // list={PostList}
         // edit={PostEdit}

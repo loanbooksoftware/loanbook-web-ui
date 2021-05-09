@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.1.10",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.12.4",
+    "ra-data-hasura": "https://github.com/bhaskar20/ra-data-hasura#master",
     "react": "^17.0.2",
     "react-admin": "^3.14.5",
     "react-dom": "^17.0.2",
