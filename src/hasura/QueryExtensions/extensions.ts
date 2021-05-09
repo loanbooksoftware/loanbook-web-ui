@@ -73,6 +73,44 @@ const shortTermLoansExtensions = [
       }
     `,
   },
+  {
+    resourceName: Resources.shortTermLoans,
+    fetchType: FETCH_TYPES.GET_ONE,
+    query: gql`
+      {
+        customer {
+          first_name
+          id
+          last_name
+          date_of_birth
+          occupation
+          monthly_income
+        }
+        si_frequency {
+          si
+          frequency
+          id
+        }
+        short_term_repayments_aggregate {
+          aggregate {
+            count
+            sum {
+              amount
+            }
+            max {
+              date
+            }
+          }
+        }
+        short_term_repayments {
+          amount
+          date
+          created_at
+          installment_date
+        }
+      }
+    `,
+  },
 ];
 
 const extensions = [...customersExtensions, ...shortTermLoansExtensions];

@@ -26,44 +26,11 @@ import {
   DateField,
   ArrayField,
 } from "react-admin";
-import ChevronLeft from "@material-ui/core/Icon";
 import { Link } from "react-router-dom";
 import { Resources } from "../../constants/resources";
 
-import { CustomerReferenceInput, RefererDetail } from "./components";
-
-const CustomerListActions = (props) => {
-  const { className, exporter, filters, maxResults, ...rest } = props;
-  const {
-    currentSort,
-    resource,
-    displayedFilters,
-    filterValues,
-    basePath,
-    showFilter,
-    total,
-  } = useListContext();
-  return (
-    <TopToolbar className={className} {...sanitizeListRestProps(rest)}>
-      {filters &&
-        cloneElement(filters, {
-          resource,
-          showFilter,
-          displayedFilters,
-          filterValues,
-          context: "button",
-        })}
-      <CreateButton basePath={basePath} />
-      <ExportButton
-        disabled={total === 0}
-        resource={resource}
-        sort={currentSort}
-        filterValues={filterValues}
-        maxResults={maxResults}
-      />
-    </TopToolbar>
-  );
-};
+import { CustomerReferenceInput, CustomerShortDetail } from "./components";
+import { ListActions, listExtraProps, EditActions } from "../Commons";
 
 const CustomerListFilter = (props) => (
   <Filter {...props}>
@@ -74,28 +41,21 @@ const CustomerListFilter = (props) => (
 export const CustomerList = (props) => (
   <List
     {...props}
-    actions={<CustomerListActions />}
+    {...listExtraProps}
+    actions={<ListActions />}
     filters={<CustomerListFilter />}
-    perPage={50}
   >
     <Datagrid rowClick="show">
       <TextField source="first_name" />
       <TextField source="last_name" />
       <TextField source="occupation" />
-      <RefererDetail />
+      <CustomerShortDetail path="referrer_details" />
     </Datagrid>
   </List>
 );
 
-const CustomerEditActions = ({ basePath, data }) => (
-  <TopToolbar>
-    <ListButton basePath={basePath} label="Back" icon={<ChevronLeft />} />
-    <ShowButton basePath={basePath} record={data} />
-  </TopToolbar>
-);
-
 export const CustomerEdit = (props) => (
-  <Edit {...props} actions={<CustomerEditActions />}>
+  <Edit {...props} actions={<EditActions />}>
     <SimpleForm>
       <TextInput source="id" disabled />
       <TextInput source="first_name" />
@@ -103,21 +63,7 @@ export const CustomerEdit = (props) => (
       <TextInput source="occupation" />
       <NumberInput source="monthly_income" />
       <DateInput source="date_of_birth" />
-      {/* <ReferenceInput
-        label="Reference"
-        source="reference"
-        reference="customers"
-        filterToQuery={(searchText) => ({ first_name: searchText })}
-      >
-        <AutocompleteInput
-          optionText={<CustomerSelectRenderer />}
-          inputText={(record) =>
-            `${record.first_name} ${record.last_name ?? ""}`
-          }
-          matchSuggestion={(filterValue, record) => true}
-        />
-      </ReferenceInput> */}
-      <CustomerReferenceInput />
+      <CustomerReferenceInput label="Reference" source="reference" />
     </SimpleForm>
   </Edit>
 );
@@ -130,7 +76,7 @@ export const CustomerCreate = (props) => (
       <TextInput source="occupation" />
       <NumberInput source="monthly_income" />
       <DateInput source="date_of_birth" />
-      <CustomerReferenceInput />
+      <CustomerReferenceInput label="Reference" source="reference" />
     </SimpleForm>
   </Create>
 );
@@ -163,7 +109,7 @@ export const CustomerShow = (props) => (
           day: "numeric",
         }}
       />
-      <RefererDetail />
+      <CustomerShortDetail path="referrer_details" />
       <ArrayField source="short_term_loans">
         <Datagrid>
           <DateField source="date" />
