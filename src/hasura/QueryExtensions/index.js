@@ -9,8 +9,6 @@ export const customBuildFields = (type, fetchType) => {
   const resourceName = type.name;
   const defaultFields = buildFields(type, fetchType);
 
-  console.log(type, fetchType);
-
   const extendedObj = extensions.find(
     (el) => el.resourceName === resourceName && el.fetchType === fetchType
   );

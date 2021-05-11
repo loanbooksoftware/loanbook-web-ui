@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Admin, Resource, ListGuesser, EditGuesser } from "react-admin";
 import { Resources } from "./constants/resources";
 import PersonIcon from "@material-ui/icons/Person";
+import RestoreIcon from "@material-ui/icons/Restore";
 import provider from "./hasura";
 
 import Dashboard from "./Modules/Dashboard";
@@ -22,6 +23,8 @@ import {
 import {
   ShortTermRepaymentCreate,
   ShortTermRepaymentEdit,
+  ShortTermRepaymentShow,
+  ShortTermRepaymentList,
 } from "./Modules/ShortTermRepayments";
 
 function App() {
@@ -58,14 +61,14 @@ function App() {
         edit={ShortTermLoanEdit}
         create={ShortTermLoanCreate}
         show={ShortTermLoanShow}
+        icon={RestoreIcon}
       />
       <Resource
         name={Resources.shortTermRepayments}
-        list={ListGuesser}
-        // create={ShortTermRepaymentCreate}
+        list={ShortTermRepaymentList}
         edit={ShortTermRepaymentEdit}
         create={ShortTermRepaymentCreate}
-        show={EditGuesser}
+        show={ShortTermRepaymentShow}
       />
       <Resource name={Resources.siFrequency} />
     </Admin>

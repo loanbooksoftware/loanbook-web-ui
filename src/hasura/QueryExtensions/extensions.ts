@@ -112,8 +112,99 @@ const shortTermLoansExtensions = [
       }
     `,
   },
+  {
+    resourceName: Resources.shortTermLoans,
+    fetchType: FETCH_TYPES.GET_MANY,
+    query: gql`
+      {
+        customer {
+          id
+          first_name
+          last_name
+        }
+        si_frequency {
+          si
+          frequency
+          id
+        }
+      }
+    `,
+  },
 ];
 
-const extensions = [...customersExtensions, ...shortTermLoansExtensions];
+const shortTermRepaymentsExtensions = [
+  {
+    resourceName: Resources.shortTermRepayments,
+    fetchType: FETCH_TYPES.GET_LIST,
+    query: gql`
+      {
+        short_term_loan {
+          id
+          customer {
+            id
+            last_name
+            first_name
+          }
+          date
+          total
+          si_frequency {
+            id
+            frequency
+          }
+        }
+      }
+    `,
+  },
+  {
+    resourceName: Resources.shortTermRepayments,
+    fetchType: FETCH_TYPES.GET_ONE,
+    query: gql`
+      {
+        short_term_loan {
+          id
+          customer {
+            id
+            last_name
+            first_name
+          }
+          date
+          total
+          si_frequency {
+            id
+            frequency
+          }
+        }
+      }
+    `,
+  },
+  {
+    resourceName: Resources.shortTermRepayments,
+    fetchType: FETCH_TYPES.GET_MANY,
+    query: gql`
+      {
+        short_term_loan {
+          id
+          customer {
+            id
+            last_name
+            first_name
+          }
+          date
+          total
+          si_frequency {
+            id
+            frequency
+          }
+        }
+      }
+    `,
+  },
+];
+
+const extensions = [
+  ...customersExtensions,
+  ...shortTermLoansExtensions,
+  ...shortTermRepaymentsExtensions,
+];
 
 export default extensions;

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
   ReferenceInput,
-  SelectInput,
   useDataProvider,
   FormDataConsumer,
+  AutocompleteInput,
 } from "react-admin";
 
 import Box from "@material-ui/core/Box";
 import InputLabel from "@material-ui/core/InputLabel";
+import { makeStyles } from "@material-ui/core/styles";
 import { Resources } from "../../constants/resources";
 
 import { CustomerShortDetailsRenderer } from "../Commons";
@@ -77,5 +78,57 @@ export const DetailsCalculated = (props) => {
         );
       }}
     </FormDataConsumer>
+  );
+};
+
+export const ShortTermSelectRenderer = ({ record }) => {
+  return (
+    <Box>
+      <Box>
+        {record.customer?.first_name} {record.customer?.last_name ?? ""}
+      </Box>
+      <Box>
+        {record.date} | {record.total} | {record.si_frequency.frequency}
+      </Box>
+    </Box>
+  );
+};
+
+const useStyles = makeStyles(() => ({
+  largeInput: {
+    width: "40%",
+  },
+}));
+
+export const ShortTermLoanReferenceInput = (props) => {
+  const classes = useStyles();
+  const { source, label } = props;
+  return (
+    <ReferenceInput
+      label={label}
+      source={source}
+      reference={Resources.shortTermLoans}
+      filterToQuery={(searchText) => ({
+        customer: {
+          format: "hasura-raw-query",
+          value: { first_name: { _ilike: `%${searchText}%` } },
+        },
+      })}
+    >
+      <AutocompleteInput
+        optionText={<ShortTermSelectRenderer />}
+        inputText={(record) => {
+          return `${record.customer?.first_name} ${
+            record.customer?.last_name ?? ""
+          } || ${record.date} || ${record.total} - ${
+            record.si_frequency.frequency
+          }`;
+        }}
+        matchSuggestion={(filterValue, record) => true}
+        options={{
+          classes: { root: classes.largeInput },
+        }}
+      />
+    </ReferenceInput>
   );
 };

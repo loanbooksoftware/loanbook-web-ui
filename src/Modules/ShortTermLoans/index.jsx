@@ -145,7 +145,7 @@ export const ShowActions = ({ basePath, data, resource, children }) => (
       to={{
         pathname: `/${Resources.shortTermRepayments}/create`,
         search: `?source=${JSON.stringify({
-          short_term_loan_id: data.id,
+          short_term_loan_id: data?.id,
         })}`,
       }}
       size="small"

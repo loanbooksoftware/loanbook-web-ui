@@ -1,4 +1,8 @@
-import React, { cloneElement } from "react";
+import React, { cloneElement, useCallback } from "react";
+import PropTypes from "prop-types";
+import clsx from "clsx";
+import { makeStyles } from "@material-ui/core/styles";
+
 import {
   linkToRecord,
   useListContext,
@@ -9,11 +13,83 @@ import {
   ListButton,
   ShowButton,
   EditButton,
+  Button,
 } from "react-admin";
+import { useForm } from "react-final-form";
+import IconClear from "@material-ui/icons/Clear";
+
 import { Link } from "react-router-dom";
 import get from "lodash/get";
 import ChevronLeft from "@material-ui/core/Icon";
 import { Resources } from "../../constants/resources";
+
+const useStyles = makeStyles(
+  (theme) => ({
+    button: {
+      marginLeft: "10px",
+      position: "relative",
+    },
+    leftIcon: {
+      marginRight: theme.spacing(1),
+    },
+    icon: {
+      fontSize: 18,
+    },
+  }),
+  { name: "ClearButton" }
+);
+
+const sanitizeRestProps = ({
+  basePath,
+  invalid,
+  pristine,
+  //reset,
+  saving,
+  submitOnEnter,
+  handleSubmit,
+  handleSubmitWithRedirect,
+  undoable,
+  onSave,
+  ...rest
+}) => rest;
+
+const ClearButton = ({ className, icon, ...rest }) => {
+  const classes = useStyles();
+  const form = useForm();
+
+  const handleClick = useCallback(() => {
+    form.setConfig("keepDirtyOnReinitialize", false);
+    form.reset();
+    form.setConfig("keepDirtyOnReinitialize", true);
+  }, [form]);
+
+  return (
+    <Button
+      className={clsx(classes.button, className)}
+      onClick={handleClick}
+      {...sanitizeRestProps(rest)}
+    >
+      {icon
+        ? React.cloneElement(icon, {
+            className: clsx(classes.leftIcon, classes.icon),
+          })
+        : null}
+    </Button>
+  );
+};
+
+ClearButton.propTypes = {
+  className: PropTypes.string,
+  classes: PropTypes.object,
+  icon: PropTypes.element,
+};
+
+ClearButton.defaultProps = {
+  icon: <IconClear />,
+  label: "Clear",
+};
+
+export default ClearButton;
 
 export function StopEventPropagation(props) {
   const noPropagation = (e) => e.stopPropagation();
