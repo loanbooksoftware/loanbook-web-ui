@@ -3,4 +3,5 @@ export const Resources = {
   shortTermLoans: "short_term_loans",
   siFrequency: "si_frequency",
   shortTermRepayments: "short_term_repayments",
+  viewShortTermStatus: "view_short_term_status",
 };

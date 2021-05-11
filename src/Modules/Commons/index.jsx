@@ -98,7 +98,15 @@ export function StopEventPropagation(props) {
 }
 
 export const ListActions = (props) => {
-  const { className, exporter, filters, maxResults, children, ...rest } = props;
+  const {
+    className,
+    exporter,
+    filters,
+    maxResults,
+    children,
+    disableCreate,
+    ...rest
+  } = props;
   const {
     currentSort,
     resource,
@@ -119,7 +127,7 @@ export const ListActions = (props) => {
           context: "button",
         })}
       {children}
-      <CreateButton basePath={basePath} />
+      {!disableCreate && <CreateButton basePath={basePath} />}
       <ExportButton
         disabled={total === 0}
         resource={resource}
@@ -131,7 +139,11 @@ export const ListActions = (props) => {
   );
 };
 
-export const listExtraProps = { perPage: 50, bulkActionButtons: false };
+export const listExtraProps = {
+  perPage: 50,
+  bulkActionButtons: false,
+  sort: { field: "id", order: "DESC" },
+};
 
 export const EditActions = ({ basePath, data }) => (
   <TopToolbar>

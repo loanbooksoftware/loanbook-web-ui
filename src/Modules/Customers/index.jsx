@@ -1,19 +1,12 @@
-import React, { cloneElement } from "react";
+import React from "react";
 import {
   linkToRecord,
   useRecordContext,
   List,
   Datagrid,
   TextField,
-  useListContext,
-  TopToolbar,
-  CreateButton,
-  ExportButton,
-  sanitizeListRestProps,
   Filter,
   SearchInput,
-  ListButton,
-  ShowButton,
   Create,
   Edit,
   SimpleForm,
@@ -46,6 +39,7 @@ export const CustomerList = (props) => (
     filters={<CustomerListFilter />}
   >
     <Datagrid rowClick="show">
+      <TextField source="id" />
       <TextField source="first_name" />
       <TextField source="last_name" />
       <TextField source="occupation" />

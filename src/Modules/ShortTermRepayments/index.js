@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  linkToRecord,
   TextField,
   Create,
   Edit,
@@ -15,16 +14,15 @@ import {
   Datagrid,
   Toolbar,
   SaveButton,
-  DeleteButton,
 } from "react-admin";
 import Box from "@material-ui/core/Box";
-import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import ClearButton from "../Commons";
-
-import { StopEventPropagation, listExtraProps, ListActions } from "../Commons";
-import { ShortTermLoanReferenceInput } from "../ShortTermLoans/components";
-import { Resources } from "../../constants/resources";
+import { listExtraProps, ListActions } from "../Commons";
+import {
+  ShortTermLoanReferenceInput,
+  ShortTermLoanReadOnly,
+} from "../ShortTermLoans/components";
 
 const useStyles = makeStyles({
   toolbar: {
@@ -32,31 +30,6 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
   },
 });
-
-export const ShortTermLoanReadOnly = (props) => {
-  const { record } = props;
-  const linkToLoan = linkToRecord(
-    `/${Resources.shortTermLoans}`,
-    record.short_term_loan?.id,
-    "show"
-  );
-  return (
-    <Box mb={1}>
-      <StopEventPropagation>
-        <Link to={linkToLoan}>
-          <Box>
-            {record.short_term_loan?.customer?.first_name}{" "}
-            {record.short_term_loan?.customer?.last_name ?? ""}
-          </Box>
-          <Box>
-            {record.short_term_loan?.date} | {record.short_term_loan?.total} |{" "}
-            {record.short_term_loan?.si_frequency.frequency}
-          </Box>
-        </Link>
-      </StopEventPropagation>
-    </Box>
-  );
-};
 
 export const ShortTermRepaymentList = (props) => (
   <List {...props} {...listExtraProps} actions={<ListActions />}>

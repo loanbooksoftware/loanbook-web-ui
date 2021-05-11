@@ -201,10 +201,36 @@ const shortTermRepaymentsExtensions = [
   },
 ];
 
+const viewShortTermStatusExtensions = [
+  {
+    resourceName: Resources.viewShortTermStatus,
+    fetchType: FETCH_TYPES.GET_LIST,
+    query: gql`
+      {
+        short_term_loan {
+          id
+          customer {
+            id
+            last_name
+            first_name
+          }
+          date
+          total
+          si_frequency {
+            id
+            frequency
+          }
+        }
+      }
+    `,
+  },
+];
+
 const extensions = [
   ...customersExtensions,
   ...shortTermLoansExtensions,
   ...shortTermRepaymentsExtensions,
+  ...viewShortTermStatusExtensions,
 ];
 
 export default extensions;

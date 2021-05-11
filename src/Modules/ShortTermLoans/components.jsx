@@ -4,14 +4,16 @@ import {
   useDataProvider,
   FormDataConsumer,
   AutocompleteInput,
+  linkToRecord,
 } from "react-admin";
 
 import Box from "@material-ui/core/Box";
 import InputLabel from "@material-ui/core/InputLabel";
 import { makeStyles } from "@material-ui/core/styles";
 import { Resources } from "../../constants/resources";
+import { Link } from "react-router-dom";
 
-import { CustomerShortDetailsRenderer } from "../Commons";
+import { CustomerShortDetailsRenderer, StopEventPropagation } from "../Commons";
 
 export const SISelectRenderer = ({ record }) => {
   return (
@@ -130,5 +132,30 @@ export const ShortTermLoanReferenceInput = (props) => {
         }}
       />
     </ReferenceInput>
+  );
+};
+
+export const ShortTermLoanReadOnly = (props) => {
+  const { record } = props;
+  const linkToLoan = linkToRecord(
+    `/${Resources.shortTermLoans}`,
+    record.short_term_loan?.id,
+    "show"
+  );
+  return (
+    <Box mb={1}>
+      <StopEventPropagation>
+        <Link to={linkToLoan}>
+          <Box>
+            {record.short_term_loan?.customer?.first_name}{" "}
+            {record.short_term_loan?.customer?.last_name ?? ""}
+          </Box>
+          <Box style={{ whiteSpace: "nowrap" }}>
+            {record.short_term_loan?.date} | {record.short_term_loan?.total} |{" "}
+            {record.short_term_loan?.si_frequency.frequency}
+          </Box>
+        </Link>
+      </StopEventPropagation>
+    </Box>
   );
 };
