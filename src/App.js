@@ -3,6 +3,7 @@ import { Admin, Resource, ListGuesser, EditGuesser } from "react-admin";
 import { Resources } from "./constants/resources";
 import PersonIcon from "@material-ui/icons/Person";
 import RestoreIcon from "@material-ui/icons/Restore";
+import PollIcon from "@material-ui/icons/Poll";
 import provider from "./hasura";
 
 import Dashboard from "./Modules/Dashboard";
@@ -26,6 +27,8 @@ import {
   ShortTermRepaymentShow,
   ShortTermRepaymentList,
 } from "./Modules/ShortTermRepayments";
+
+import { ViewShortTermStatusList } from "./Modules/ViewShortTermStatus";
 
 function App() {
   const [dataProvider, setDataProvider] = useState(null);
@@ -69,6 +72,13 @@ function App() {
         edit={ShortTermRepaymentEdit}
         create={ShortTermRepaymentCreate}
         show={ShortTermRepaymentShow}
+      />
+      <Resource
+        name={Resources.viewShortTermStatus}
+        options={{ label: "Short term status" }}
+        list={ViewShortTermStatusList}
+        icon={PollIcon}
+        create={false}
       />
       <Resource name={Resources.siFrequency} />
     </Admin>
