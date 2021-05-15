@@ -2,7 +2,8 @@ import React, { cloneElement, useCallback } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-
+import Box from "@material-ui/core/Box";
+import InputLabel from "@material-ui/core/InputLabel";
 import {
   linkToRecord,
   useListContext,
@@ -21,7 +22,7 @@ import IconClear from "@material-ui/icons/Clear";
 import { Link } from "react-router-dom";
 import get from "lodash/get";
 import ChevronLeft from "@material-ui/core/Icon";
-import { Resources } from "../../constants/resources";
+import { Resources } from "../constants/resources";
 
 const useStyles = makeStyles(
   (theme) => ({
@@ -174,3 +175,15 @@ export const ShowActions = ({ basePath, data, resource, children }) => (
     <EditButton basePath={basePath} record={data} />
   </TopToolbar>
 );
+
+export const CustomerReadOnly = (props) => {
+  const { record } = props;
+  return (
+    <Box mb={1}>
+      <Box mb={0.5}>
+        <InputLabel>Customer name</InputLabel>
+      </Box>
+      <CustomerShortDetailsRenderer record={record} path="customer" />
+    </Box>
+  );
+};

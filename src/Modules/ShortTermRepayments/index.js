@@ -15,10 +15,9 @@ import {
   Toolbar,
   SaveButton,
 } from "react-admin";
-import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
-import ClearButton from "../Commons";
-import { listExtraProps, ListActions } from "../Commons";
+import ClearButton from "../../Commons";
+import { listExtraProps, ListActions } from "../../Commons";
 import {
   ShortTermLoanReferenceInput,
   ShortTermLoanReadOnly,
@@ -27,7 +26,9 @@ import {
 const useStyles = makeStyles({
   toolbar: {
     display: "flex",
-    justifyContent: "space-between",
+    "& button": {
+      marginRight: "8px",
+    },
   },
 });
 
@@ -43,32 +44,28 @@ export const ShortTermRepaymentList = (props) => (
   </List>
 );
 
-const redirect = (basePath, id, data) => `${basePath}/create`;
+// const redirect = (basePath, id, data) => `${basePath}/create`;
 
 const PostCreateToolbar = (props) => (
   <Toolbar {...props}>
-    <Box mr={1}>
-      <SaveButton label="Save and add" redirect={false} submitOnEnter={false} />
-    </Box>
-    <Box mr={1}>
-      <SaveButton
-        label="Save and show"
-        redirect="show"
-        submitOnEnter={true}
-        variant="outlined"
-      />
-    </Box>
+    <SaveButton label="Save and add" redirect={false} submitOnEnter={false} />
+    <SaveButton
+      label="Save and show"
+      redirect="show"
+      submitOnEnter={true}
+      variant="outlined"
+    />
     <ClearButton />
   </Toolbar>
 );
 
 export const ShortTermRepaymentCreate = (props) => {
+  const classes = useStyles();
   return (
     <Create {...props} mutationMode={"pessimistic"}>
       <SimpleForm
-        redirect={redirect}
-        toolbar={<PostCreateToolbar />}
-        classes={useStyles()}
+        redirect="show"
+        toolbar={<PostCreateToolbar classes={{ toolbar: classes.toolbar }} />}
       >
         <ShortTermLoanReferenceInput
           source="short_term_loan_id"
@@ -87,9 +84,15 @@ export const ShortTermRepaymentCreate = (props) => {
 };
 
 export const ShortTermRepaymentEdit = (props) => {
+  const transform = (data) => {
+    const dataClone = { ...data };
+    delete dataClone.short_term_loan;
+    return dataClone;
+  };
+
   return (
-    <Edit {...props}>
-      <SimpleForm>
+    <Edit {...props} transform={transform} mutationMode="pessimistic">
+      <SimpleForm redirect="show">
         <ShortTermLoanReferenceInput
           source="short_term_loan_id"
           label="Short term loan"

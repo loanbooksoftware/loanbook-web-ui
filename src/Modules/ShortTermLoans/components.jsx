@@ -13,7 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Resources } from "../../constants/resources";
 import { Link } from "react-router-dom";
 
-import { CustomerShortDetailsRenderer, StopEventPropagation } from "../Commons";
+import { StopEventPropagation } from "../../Commons";
 
 export const SISelectRenderer = ({ record }) => {
   return (
@@ -22,18 +22,6 @@ export const SISelectRenderer = ({ record }) => {
         {record.first_name} {record.last_name ?? ""}
       </Box>
       <Box>({record.occupation})</Box>
-    </Box>
-  );
-};
-
-export const CustomerReadOnly = (props) => {
-  const { record } = props;
-  return (
-    <Box mb={1}>
-      <Box mb={0.5}>
-        <InputLabel>Customer name</InputLabel>
-      </Box>
-      <CustomerShortDetailsRenderer record={record} path="customer" />
     </Box>
   );
 };

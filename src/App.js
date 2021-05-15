@@ -4,6 +4,7 @@ import { Resources } from "./constants/resources";
 import PersonIcon from "@material-ui/icons/Person";
 import RestoreIcon from "@material-ui/icons/Restore";
 import PollIcon from "@material-ui/icons/Poll";
+import TimerOffIcon from "@material-ui/icons/TimerOff";
 import provider from "./hasura";
 
 import Dashboard from "./Modules/Dashboard";
@@ -20,13 +21,18 @@ import {
   ShortTermLoanCreate,
   ShortTermLoanShow,
 } from "./Modules/ShortTermLoans";
-
 import {
   ShortTermRepaymentCreate,
   ShortTermRepaymentEdit,
   ShortTermRepaymentShow,
   ShortTermRepaymentList,
 } from "./Modules/ShortTermRepayments";
+import {
+  LongTermLoanList,
+  LongTermLoanEdit,
+  LongTermLoanCreate,
+  LongTermLoanShow,
+} from "./Modules/LongTermLoans";
 
 import { ViewShortTermStatusList } from "./Modules/ViewShortTermStatus";
 
@@ -65,6 +71,14 @@ function App() {
         create={ShortTermLoanCreate}
         show={ShortTermLoanShow}
         icon={RestoreIcon}
+      />
+      <Resource
+        name={Resources.longTermLoans}
+        list={LongTermLoanList}
+        edit={LongTermLoanEdit}
+        create={LongTermLoanCreate}
+        show={LongTermLoanShow}
+        icon={TimerOffIcon}
       />
       <Resource
         name={Resources.shortTermRepayments}

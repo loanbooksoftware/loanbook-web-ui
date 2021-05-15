@@ -21,6 +21,8 @@ import {
   SelectInput,
   EditButton,
   Link,
+  TabbedShowLayout,
+  Tab,
 } from "react-admin";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
@@ -32,13 +34,15 @@ import {
   CustomerReferenceInput,
 } from "../Customers/components";
 
+import FilterResourceList from "../../RaExtensions/FilterResourceList";
+
 import {
   ListActions,
   listExtraProps,
   EditActions,
   CustomerReadOnly,
 } from "../../Commons";
-import { DetailsCalculated } from "./components";
+import { LongTermDetailsCalculated } from "./components";
 
 const ShortTermLoanListFilter = (props) => (
   <Filter {...props}>
@@ -46,7 +50,7 @@ const ShortTermLoanListFilter = (props) => (
   </Filter>
 );
 
-export const ShortTermLoanList = (props) => (
+export const LongTermLoanList = (props) => (
   <List
     {...props}
     {...listExtraProps}
@@ -54,7 +58,7 @@ export const ShortTermLoanList = (props) => (
     actions={
       <ListActions>
         <CreateButton
-          basePath={`/${Resources.shortTermRepayments}`}
+          basePath={`/${Resources.longTermRepayments}`}
           label="Repayment"
         />
       </ListActions>
@@ -65,23 +69,20 @@ export const ShortTermLoanList = (props) => (
       <CustomerShortDetail path="customer" label="Customer" />
       <DateField source="date" />
       <NumberField source="principal_amount" />
-      <NumberField source="installment_amount" />
-      <NumberField source="duration" />
+      <NumberField source="period_interest_amount" />
       <TextField label="frequency" source="si_frequency.frequency" />
       <TextField label="SI" source="si_frequency.si" />
-      <TextField source="status" />
-      <NumberField source="total" />
     </Datagrid>
   </List>
 );
 
-export const ShortTermLoanEdit = (props) => {
+export const LongTermLoanEdit = (props) => {
   const transform = (data) => {
     const dataClone = { ...data };
     delete dataClone.customer;
     delete dataClone.si_frequency;
-    delete dataClone.short_term_repayments_aggregate;
-    delete dataClone.short_term_repayments;
+    delete dataClone.view_status;
+    delete dataClone.long_term_repayments;
     return dataClone;
   };
 
@@ -102,17 +103,16 @@ export const ShortTermLoanEdit = (props) => {
         >
           <SelectInput optionText="frequency" />
         </ReferenceInput>
-        <NumberInput source="duration" />
         <Divider style={{ margin: "20px 0px" }} />
-        <DetailsCalculated />
-        <NumberInput source="total" />
+        <LongTermDetailsCalculated />
+        {/* <NumberInput source="period_interest_amount" /> */}
         <TextInput source="status" />
       </SimpleForm>
     </Edit>
   );
 };
 
-export const ShortTermLoanCreate = (props) => {
+export const LongTermLoanCreate = (props) => {
   return (
     <Create {...props} mutationMode={"pessimistic"}>
       <SimpleForm redirect="show">
@@ -125,19 +125,18 @@ export const ShortTermLoanCreate = (props) => {
         >
           <SelectInput optionText="frequency" />
         </ReferenceInput>
-        <NumberInput source="duration" />
         <Divider style={{ margin: "20px 0px" }} />
-        <DetailsCalculated />
-        <NumberInput source="total" />
+        <LongTermDetailsCalculated />
+        <NumberInput source="period_interest_amount" />
       </SimpleForm>
     </Create>
   );
 };
 
-const ShortTermRepaymentEditButton = ({ record }) => {
+const LongTermRepaymentEditButton = ({ record }) => {
   return (
     <EditButton
-      basePath={`/${Resources.shortTermRepayments}/${record.id}`}
+      basePath={`/${Resources.longTermRepayments}/${record.id}`}
       record={record}
     />
   );
@@ -148,9 +147,9 @@ export const ShowActions = ({ basePath, data, resource, children }) => (
     <Button
       component={Link}
       to={{
-        pathname: `/${Resources.shortTermRepayments}/create`,
+        pathname: `/${Resources.longTermRepayments}/create`,
         search: `?source=${JSON.stringify({
-          short_term_loan_id: data?.id,
+          long_term_loan_id: data?.id,
         })}`,
       }}
       size="small"
@@ -163,7 +162,7 @@ export const ShowActions = ({ basePath, data, resource, children }) => (
   </TopToolbar>
 );
 
-export const ShortTermLoanShow = (props) => (
+export const LongTermLoanShow = (props) => (
   <Show {...props} actions={<ShowActions />}>
     <SimpleShowLayout>
       <TextField source="id" />
@@ -180,18 +179,56 @@ export const ShortTermLoanShow = (props) => (
       <NumberField source="principal_amount" />
       <TextField label="frequency" source="si_frequency.frequency" />
       <TextField label="SI" source="si_frequency.si" />
-      <NumberField source="duration" />
-      <NumberField source="total" />
       <Divider style={{ margin: "20px 0px" }} />
-      <NumberField source="installment_amount" />
-      <TextField source="status" />
+      <NumberField source="period_interest_amount" />
       <Divider style={{ margin: "20px 0px" }} />
       <Box mb={1} style={{ fontSize: "20px", fontWeight: 500 }}>
         Repayments
       </Box>
+      <TextField
+        source="view_status.long_term_repayments_interest"
+        label="Total interest payment"
+      />
+      <TextField
+        source="view_status.long_term_repayments_principal"
+        label="Total principal payment"
+      />
+      <TextField source="view_status.new_amount" label="New interest amount" />
+      <TextField source="view_status.principal_amount_left" label="Principal" />
+      <TabbedShowLayout>
+        <Tab label="Interest Payments">
+          <ArrayField label="" source="long_term_repayments">
+            <FilterResourceList filter={(el) => el.type === "INTEREST"}>
+              <Datagrid>
+                <DateField label="Installment Date" source="date" />
+                <NumberField source="amount" />
+                <TextField source="type" />
+                {/* <ShortTermRepaymentEditButton /> */}
+              </Datagrid>
+            </FilterResourceList>
+          </ArrayField>
+        </Tab>
+        <Tab label="Principal Payments" path="principal_payments">
+          <ArrayField label="" source="long_term_repayments">
+            <FilterResourceList filter={(el) => el.type === "PRINCIPAL"}>
+              <Datagrid>
+                <DateField label="Installment Date" source="date" />
+                <NumberField source="amount" />
+                <TextField source="type" />
+                {/* <ShortTermRepaymentEditButton /> */}
+              </Datagrid>
+            </FilterResourceList>
+          </ArrayField>
+        </Tab>
+      </TabbedShowLayout>
+
+      {/* <NumberField
+        label="Interest Installments"
+        source="long_term_repayments_aggregate.aggregate.count"
+      />
       <NumberField
-        label="Installments"
-        source="short_term_repayments_aggregate.aggregate.count"
+        label="Principal Installments"
+        source="long_term_repayments_aggregate.aggregate.count"
       />
       <NumberField
         label="Amount"
@@ -206,15 +243,15 @@ export const ShortTermLoanShow = (props) => (
           month: "long",
           day: "numeric",
         }}
-      />
-      <ArrayField label="Repayments" source="short_term_repayments">
+      /> */}
+      {/* <ArrayField label="Repayments" source="short_term_repayments">
         <Datagrid>
           <DateField label="Added on" source="date" />
           <DateField label="Installment Date" source="installment_date" />
           <NumberField source="amount" />
-          <ShortTermRepaymentEditButton />
+          <LongTermRepaymentEditButton />
         </Datagrid>
-      </ArrayField>
+      </ArrayField> */}
     </SimpleShowLayout>
   </Show>
 );

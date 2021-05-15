@@ -7,7 +7,7 @@ import {
 import Box from "@material-ui/core/Box";
 
 import { Resources } from "../../constants/resources";
-import { CustomerShortDetailsRenderer } from "../Commons";
+import { CustomerShortDetailsRenderer } from "../../Commons";
 
 export const CustomerShortDetail = (props) => {
   const { path } = props;

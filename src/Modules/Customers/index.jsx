@@ -23,7 +23,7 @@ import { Link } from "react-router-dom";
 import { Resources } from "../../constants/resources";
 
 import { CustomerReferenceInput, CustomerShortDetail } from "./components";
-import { ListActions, listExtraProps, EditActions } from "../Commons";
+import { ListActions, listExtraProps, EditActions } from "../../Commons";
 
 const CustomerListFilter = (props) => (
   <Filter {...props}>
@@ -49,8 +49,8 @@ export const CustomerList = (props) => (
 );
 
 export const CustomerEdit = (props) => (
-  <Edit {...props} actions={<EditActions />}>
-    <SimpleForm>
+  <Edit {...props} actions={<EditActions />} mutationMode="pessimistic">
+    <SimpleForm redirect="show">
       <TextInput source="id" disabled />
       <TextInput source="first_name" />
       <TextInput source="last_name" />
@@ -63,8 +63,8 @@ export const CustomerEdit = (props) => (
 );
 
 export const CustomerCreate = (props) => (
-  <Create {...props}>
-    <SimpleForm>
+  <Create {...props} mutationMode="pessimistic">
+    <SimpleForm redirect="show">
       <TextInput source="first_name" />
       <TextInput source="last_name" />
       <TextInput source="occupation" />

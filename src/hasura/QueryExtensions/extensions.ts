@@ -226,11 +226,87 @@ const viewShortTermStatusExtensions = [
   },
 ];
 
+const longTermLoansExtensions = [
+  {
+    resourceName: Resources.longTermLoans,
+    fetchType: FETCH_TYPES.GET_LIST,
+    query: gql`
+      {
+        customer {
+          first_name
+          id
+          last_name
+          date_of_birth
+          occupation
+          monthly_income
+        }
+        si_frequency {
+          si
+          frequency
+          id
+        }
+      }
+    `,
+  },
+  {
+    resourceName: Resources.longTermLoans,
+    fetchType: FETCH_TYPES.GET_ONE,
+    query: gql`
+      {
+        customer {
+          first_name
+          id
+          last_name
+          date_of_birth
+          occupation
+          monthly_income
+        }
+        si_frequency {
+          si
+          frequency
+          id
+        }
+        view_status {
+          long_term_repayments_interest
+          long_term_repayments_principal
+          new_amount
+          principal_amount_left
+        }
+        long_term_repayments {
+          date
+          amount
+          type
+          id
+        }
+      }
+    `,
+  },
+  {
+    resourceName: Resources.longTermLoans,
+    fetchType: FETCH_TYPES.GET_MANY,
+    query: gql`
+      {
+        customer {
+          id
+          first_name
+          last_name
+        }
+        si_frequency {
+          si
+          frequency
+          id
+        }
+      }
+    `,
+  },
+];
+
 const extensions = [
   ...customersExtensions,
   ...shortTermLoansExtensions,
   ...shortTermRepaymentsExtensions,
   ...viewShortTermStatusExtensions,
+  ...longTermLoansExtensions,
 ];
 
 export default extensions;

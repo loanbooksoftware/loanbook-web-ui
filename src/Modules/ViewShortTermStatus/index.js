@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField, NumberField, DateField, List, Datagrid } from "react-admin";
-import { listExtraProps, ListActions } from "../Commons";
+import { listExtraProps, ListActions } from "../../Commons";
 import { ShortTermLoanReadOnly } from "../ShortTermLoans/components";
 
 export const ViewShortTermStatusList = (props) => (
