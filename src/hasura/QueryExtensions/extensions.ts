@@ -301,12 +301,112 @@ const longTermLoansExtensions = [
   },
 ];
 
+const longTermRepaymentsExtensions = [
+  {
+    resourceName: Resources.longTermRepayments,
+    fetchType: FETCH_TYPES.GET_LIST,
+    query: gql`
+      {
+        long_term_loan {
+          customer {
+            id
+            last_name
+            first_name
+          }
+          id
+          date
+          principal_amount
+          period_interest_amount
+          si_frequency {
+            id
+            frequency
+          }
+        }
+      }
+    `,
+  },
+  {
+    resourceName: Resources.longTermRepayments,
+    fetchType: FETCH_TYPES.GET_ONE,
+    query: gql`
+      {
+        long_term_loan {
+          customer {
+            id
+            last_name
+            first_name
+          }
+          id
+          date
+          principal_amount
+          period_interest_amount
+          si_frequency {
+            id
+            frequency
+          }
+        }
+      }
+    `,
+  },
+  {
+    resourceName: Resources.longTermRepayments,
+    fetchType: FETCH_TYPES.GET_MANY,
+    query: gql`
+      {
+        long_term_loan {
+          customer {
+            id
+            last_name
+            first_name
+          }
+          id
+          date
+          principal_amount
+          period_interest_amount
+          si_frequency {
+            id
+            frequency
+          }
+        }
+      }
+    `,
+  },
+];
+
+const viewLongTermStatusExtensions = [
+  {
+    resourceName: Resources.viewLongTermStatus,
+    fetchType: FETCH_TYPES.GET_LIST,
+    query: gql`
+      {
+        long_term_loan {
+          customer {
+            id
+            last_name
+            first_name
+          }
+          id
+          date
+          principal_amount
+          period_interest_amount
+          si_frequency {
+            id
+            frequency
+          }
+        }
+      }
+    `,
+  },
+];
+
 const extensions = [
   ...customersExtensions,
   ...shortTermLoansExtensions,
   ...shortTermRepaymentsExtensions,
   ...viewShortTermStatusExtensions,
   ...longTermLoansExtensions,
+  ...longTermRepaymentsExtensions,
+  ...viewLongTermStatusExtensions,
 ];
 
 export default extensions;

@@ -110,7 +110,7 @@ export const ShortTermLoanReferenceInput = (props) => {
         inputText={(record) => {
           return `${record.customer?.first_name} ${
             record.customer?.last_name ?? ""
-          } || ${record.date} || ${record.total} - ${
+          } | ${record.date} | ${record.total} | ${
             record.si_frequency.frequency
           }`;
         }}

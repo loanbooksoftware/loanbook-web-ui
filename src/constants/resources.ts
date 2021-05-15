@@ -6,4 +6,5 @@ export const Resources = {
   viewShortTermStatus: "view_short_term_status",
   longTermLoans: "long_term_loans",
   longTermRepayments: "long_term_repayments",
+  viewLongTermStatus: "view_long_term_status",
 };

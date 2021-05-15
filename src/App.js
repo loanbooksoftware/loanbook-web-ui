@@ -5,6 +5,8 @@ import PersonIcon from "@material-ui/icons/Person";
 import RestoreIcon from "@material-ui/icons/Restore";
 import PollIcon from "@material-ui/icons/Poll";
 import TimerOffIcon from "@material-ui/icons/TimerOff";
+import TimelineIcon from "@material-ui/icons/Timeline";
+import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import provider from "./hasura";
 
 import Dashboard from "./Modules/Dashboard";
@@ -34,7 +36,15 @@ import {
   LongTermLoanShow,
 } from "./Modules/LongTermLoans";
 
+import {
+  LongTermRepaymentList,
+  LongTermRepaymentShow,
+  LongTermRepaymentEdit,
+  LongTermRepaymentCreate,
+} from "./Modules/LongTermRepayments";
+
 import { ViewShortTermStatusList } from "./Modules/ViewShortTermStatus";
+import { ViewLongTermStatusList } from "./Modules/ViewLongTermStatus";
 
 function App() {
   const [dataProvider, setDataProvider] = useState(null);
@@ -73,14 +83,6 @@ function App() {
         icon={RestoreIcon}
       />
       <Resource
-        name={Resources.longTermLoans}
-        list={LongTermLoanList}
-        edit={LongTermLoanEdit}
-        create={LongTermLoanCreate}
-        show={LongTermLoanShow}
-        icon={TimerOffIcon}
-      />
-      <Resource
         name={Resources.shortTermRepayments}
         list={ShortTermRepaymentList}
         edit={ShortTermRepaymentEdit}
@@ -92,6 +94,29 @@ function App() {
         options={{ label: "Short term status" }}
         list={ViewShortTermStatusList}
         icon={PollIcon}
+        create={false}
+      />
+      <Resource
+        name={Resources.longTermLoans}
+        list={LongTermLoanList}
+        edit={LongTermLoanEdit}
+        create={LongTermLoanCreate}
+        show={LongTermLoanShow}
+        icon={TimerOffIcon}
+      />
+      <Resource
+        name={Resources.longTermRepayments}
+        list={LongTermRepaymentList}
+        edit={LongTermRepaymentEdit}
+        create={LongTermRepaymentCreate}
+        show={LongTermRepaymentShow}
+        icon={PlaylistAddCheckIcon}
+      />
+      <Resource
+        name={Resources.viewLongTermStatus}
+        options={{ label: "Long term status" }}
+        list={ViewLongTermStatusList}
+        icon={TimelineIcon}
         create={false}
       />
       <Resource name={Resources.siFrequency} />
