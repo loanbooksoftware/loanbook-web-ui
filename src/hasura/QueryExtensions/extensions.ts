@@ -38,6 +38,7 @@ const customersExtensions = [
           last_name
         }
         short_term_loans(order_by: { date: asc }) {
+          id
           date
           duration
           installment_amount
@@ -45,6 +46,38 @@ const customersExtensions = [
           status
           total
           id
+          si_frequency {
+            id
+            frequency
+            si
+          }
+        }
+        long_term_loans(order_by: { date: asc }) {
+          id
+          date
+          id
+          period_interest_amount
+          principal_amount
+          si_frequency {
+            id
+            frequency
+            si
+          }
+        }
+        credit_line {
+          expected_repayment_amount
+          exposure
+          id
+          last_repayment_date
+          long_term_amount
+          number_of_closed_loans
+          number_of_error_loans
+          number_of_open_loans
+          open_loan_amount
+          open_loan_amount_principal
+          short_term_repayment_shortfall
+          total_number_of_loans
+          total_repayed_amount
         }
       }
     `,

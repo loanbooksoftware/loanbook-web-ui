@@ -3497,6 +3497,11 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
+classnames@^2.2.6:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
+  integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
+
 classnames@~2.2.5:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
@@ -9456,6 +9461,14 @@ queue-microtask@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.2.tgz#abf64491e6ecf0f38a6502403d4cda04f372dfd3"
   integrity sha512-dB15eXv3p2jDlbOiNLyMabYg1/sXvppd8DP2J3EOCQ0AkuSXCW2tP7mnVouVLJKgUMY6yP0kcQDVpLCN13h4Xg==
+
+ra-compact-ui@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/ra-compact-ui/-/ra-compact-ui-1.1.1.tgz#a3f94ddb0d093d21e3da9f3f6ac8d6e24e5ae403"
+  integrity sha512-yMX0948oNmbXKV8I/QowKxtE10tdeXikT+306X0oyff03pWHpPmOVE1jGG59aFyDXFjfFxOOrZwY7I8eELcQ9A==
+  dependencies:
+    classnames "^2.2.6"
+    prop-types "^15.7.2"
 
 ra-core@^3.14.5:
   version "3.14.5"

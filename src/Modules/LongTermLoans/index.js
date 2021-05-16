@@ -203,7 +203,7 @@ export const LongTermLoanShow = (props) => (
                 <DateField label="Installment Date" source="date" />
                 <NumberField source="amount" />
                 <TextField source="type" />
-                {/* <ShortTermRepaymentEditButton /> */}
+                <LongTermRepaymentEditButton />
               </Datagrid>
             </FilterResourceList>
           </ArrayField>
@@ -215,7 +215,7 @@ export const LongTermLoanShow = (props) => (
                 <DateField label="Installment Date" source="date" />
                 <NumberField source="amount" />
                 <TextField source="type" />
-                {/* <ShortTermRepaymentEditButton /> */}
+                <LongTermRepaymentEditButton />
               </Datagrid>
             </FilterResourceList>
           </ArrayField>
