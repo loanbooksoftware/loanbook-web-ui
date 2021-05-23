@@ -1,12 +1,20 @@
+
+import { InMemoryCache, ApolloClient } from '@apollo/client';
+
 import buildHasuraProvider from "ra-data-hasura";
 import { customBuildFields } from "./QueryExtensions";
 
-const options = {
-  clientOptions: { uri: "http://localhost:8080/v1/graphql" },
-};
+
+const myClient = new ApolloClient({
+  uri: "https://present-garfish-33.hasura.app/v1/graphql",
+    headers: {
+      "x-hasura-admin-secret": "v0aRxnfUCMeumeQZSnaYJZI83KmLkwUyuWVNCnn8AKFOboVJSfaA7EHRw9S74Tzu",
+    },
+    cache: new InMemoryCache()
+});
 
 const provider = async () => {
-  return await buildHasuraProvider(options, {
+  return await buildHasuraProvider({ client: myClient }, {
     buildFields: customBuildFields,
   });
 };
