@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Admin, Resource, ListGuesser, EditGuesser } from "react-admin";
+import { Admin, Resource } from "react-admin";
 import { Resources } from "./constants/resources";
 import PersonIcon from "@material-ui/icons/Person";
 import RestoreIcon from "@material-ui/icons/Restore";
@@ -8,6 +8,8 @@ import TimerOffIcon from "@material-ui/icons/TimerOff";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import provider from "./hasura";
+import authProvider from "./auth/provider";
+import ErrorBoundary from "./Commons/ErrorBoundary";
 
 import Dashboard from "./Modules/Dashboard";
 import NotFound from "./notFound";
@@ -60,67 +62,70 @@ function App() {
   if (!dataProvider) return <p>Loading...</p>;
 
   return (
-    <Admin
-      dataProvider={dataProvider}
-      dashboard={Dashboard}
-      disableTelemetry
-      catchAll={NotFound}
-    >
-      <Resource
-        name={Resources.customers}
-        list={CustomerList}
-        create={CustomerCreate}
-        edit={CustomerEdit}
-        show={CustomerShow}
-        icon={PersonIcon}
-      />
-      <Resource
-        name={Resources.shortTermLoans}
-        list={ShortTermLoanList}
-        edit={ShortTermLoanEdit}
-        create={ShortTermLoanCreate}
-        show={ShortTermLoanShow}
-        icon={RestoreIcon}
-      />
-      <Resource
-        name={Resources.shortTermRepayments}
-        list={ShortTermRepaymentList}
-        edit={ShortTermRepaymentEdit}
-        create={ShortTermRepaymentCreate}
-        show={ShortTermRepaymentShow}
-      />
-      <Resource
-        name={Resources.viewShortTermStatus}
-        options={{ label: "Short term status" }}
-        list={ViewShortTermStatusList}
-        icon={PollIcon}
-        create={false}
-      />
-      <Resource
-        name={Resources.longTermLoans}
-        list={LongTermLoanList}
-        edit={LongTermLoanEdit}
-        create={LongTermLoanCreate}
-        show={LongTermLoanShow}
-        icon={TimerOffIcon}
-      />
-      <Resource
-        name={Resources.longTermRepayments}
-        list={LongTermRepaymentList}
-        edit={LongTermRepaymentEdit}
-        create={LongTermRepaymentCreate}
-        show={LongTermRepaymentShow}
-        icon={PlaylistAddCheckIcon}
-      />
-      <Resource
-        name={Resources.viewLongTermStatus}
-        options={{ label: "Long term status" }}
-        list={ViewLongTermStatusList}
-        icon={TimelineIcon}
-        create={false}
-      />
-      <Resource name={Resources.siFrequency} />
-    </Admin>
+    <ErrorBoundary>
+      <Admin
+        dataProvider={dataProvider}
+        dashboard={Dashboard}
+        disableTelemetry
+        catchAll={NotFound}
+        authProvider={authProvider}
+      >
+        <Resource
+          name={Resources.customers}
+          list={CustomerList}
+          create={CustomerCreate}
+          edit={CustomerEdit}
+          show={CustomerShow}
+          icon={PersonIcon}
+        />
+        <Resource
+          name={Resources.shortTermLoans}
+          list={ShortTermLoanList}
+          edit={ShortTermLoanEdit}
+          create={ShortTermLoanCreate}
+          show={ShortTermLoanShow}
+          icon={RestoreIcon}
+        />
+        <Resource
+          name={Resources.shortTermRepayments}
+          list={ShortTermRepaymentList}
+          edit={ShortTermRepaymentEdit}
+          create={ShortTermRepaymentCreate}
+          show={ShortTermRepaymentShow}
+        />
+        <Resource
+          name={Resources.viewShortTermStatus}
+          options={{ label: "Short term status" }}
+          list={ViewShortTermStatusList}
+          icon={PollIcon}
+          create={false}
+        />
+        <Resource
+          name={Resources.longTermLoans}
+          list={LongTermLoanList}
+          edit={LongTermLoanEdit}
+          create={LongTermLoanCreate}
+          show={LongTermLoanShow}
+          icon={TimerOffIcon}
+        />
+        <Resource
+          name={Resources.longTermRepayments}
+          list={LongTermRepaymentList}
+          edit={LongTermRepaymentEdit}
+          create={LongTermRepaymentCreate}
+          show={LongTermRepaymentShow}
+          icon={PlaylistAddCheckIcon}
+        />
+        <Resource
+          name={Resources.viewLongTermStatus}
+          options={{ label: "Long term status" }}
+          list={ViewLongTermStatusList}
+          icon={TimelineIcon}
+          create={false}
+        />
+        <Resource name={Resources.siFrequency} />
+      </Admin>
+    </ErrorBoundary>
   );
 }
 
