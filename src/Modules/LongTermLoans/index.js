@@ -13,7 +13,6 @@ import {
   DateInput,
   ReferenceInput,
   Show,
-  SimpleShowLayout,
   NumberInput,
   NumberField,
   DateField,
@@ -21,9 +20,9 @@ import {
   SelectInput,
   EditButton,
   Link,
-  TabbedShowLayout,
-  Tab,
 } from "react-admin";
+import { ShowSplitter, GridShowLayout, RaGrid } from "ra-compact-ui";
+import Typography from "@material-ui/core/Typography";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
@@ -179,53 +178,88 @@ export const ShowActions = ({ basePath, data, resource, children }) => (
   </TopToolbar>
 );
 
-export const LongTermLoanShow = (props) => (
-  <Show {...props} actions={<ShowActions />}>
-    <SimpleShowLayout>
-      <TextField source="id" />
-      <CustomerShortDetail path="customer" label="Customer" />
-      <DateField
-        source="date"
-        options={{
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }}
-      />
-      <NumberField source="principal_amount" />
-      <TextField label="frequency" source="si_frequency.frequency" />
-      <TextField label="SI" source="si_frequency.si" />
-      <Divider style={{ margin: "20px 0px" }} />
-      <NumberField source="period_interest_amount" />
-      <Divider style={{ margin: "20px 0px" }} />
-      <Box mb={1} style={{ fontSize: "20px", fontWeight: 500 }}>
-        Repayments
-      </Box>
-      <TextField
-        source="view_status.long_term_repayments_interest"
-        label="Total interest payment"
-      />
-      <TextField
-        source="view_status.long_term_repayments_principal"
-        label="Total principal payment"
-      />
-      <TextField source="view_status.new_amount" label="New interest amount" />
-      <TextField source="view_status.principal_amount_left" label="Principal" />
-      <TabbedShowLayout>
-        <Tab label="Interest Payments">
-          <ArrayField label="" source="long_term_repayments">
-            <FilterResourceList filter={(el) => el.type === "INTEREST"}>
-              <Datagrid>
-                <DateField label="Installment Date" source="date" />
-                <NumberField source="amount" />
-                <TextField source="type" />
-                <LongTermRepaymentEditButton />
-              </Datagrid>
-            </FilterResourceList>
-          </ArrayField>
-        </Tab>
-        <Tab label="Principal Payments" path="principal_payments">
+export const LongTermLoanShow = (props) => {
+  const leftSide = (
+    <GridShowLayout>
+      <Typography variant="h6">Details</Typography>
+      <RaGrid container spacing={1}>
+        <RaGrid item xs={6}>
+          <CustomerShortDetail path="customer" label="Customer" />
+        </RaGrid>
+        <RaGrid item xs={6}>
+          <TextField source="id" />
+        </RaGrid>
+        <RaGrid item xs={6}>
+          <DateField
+            source="date"
+            options={{
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }}
+          />
+        </RaGrid>
+        <RaGrid item xs={6}>
+          <NumberField source="principal_amount" />
+        </RaGrid>
+        <RaGrid item xs={6}>
+          <NumberField source="period_interest_amount" />
+        </RaGrid>
+        <RaGrid item xs={2}>
+          <TextField label="SI" source="si_frequency.si" />
+        </RaGrid>
+        <RaGrid item xs={2}>
+          <TextField label="frequency" source="si_frequency.frequency" />
+        </RaGrid>
+        <RaGrid item xs={12}>
+          <Divider style={{ margin: "20px 0px" }} />
+        </RaGrid>
+        <RaGrid item xs={12}>
+          <Box style={{ fontSize: "16px", fontWeight: 500 }}>Balance</Box>
+        </RaGrid>
+        <RaGrid item xs={6}>
+          <TextField
+            source="view_status.principal_amount_left"
+            label="Principal"
+          />
+        </RaGrid>
+        <RaGrid item xs={6}>
+          <TextField
+            source="view_status.new_amount"
+            label="New interest amount"
+          />
+        </RaGrid>
+        <RaGrid item xs={12}>
+          <Divider style={{ margin: "20px 0px" }} />
+        </RaGrid>
+        <RaGrid item xs={12}>
+          <Box style={{ fontSize: "16px", fontWeight: 500 }}>Repayments</Box>
+        </RaGrid>
+        <RaGrid item xs={6}>
+          <TextField
+            source="view_status.long_term_repayments_principal"
+            label="Total principal payment"
+          />
+        </RaGrid>
+        <RaGrid item xs={6}>
+          <TextField
+            source="view_status.long_term_repayments_interest"
+            label="Total interest payment"
+          />
+        </RaGrid>
+      </RaGrid>
+    </GridShowLayout>
+  );
+  const rightSide = (
+    <GridShowLayout>
+      <RaGrid container spacing={1}>
+        <RaGrid item xs={12}>
+          <Box style={{ fontSize: "16px", fontWeight: 500 }}>
+            Principal Repayments
+          </Box>
+        </RaGrid>
+        <RaGrid item xs={12}>
           <ArrayField label="" source="long_term_repayments">
             <FilterResourceList filter={(el) => el.type === "PRINCIPAL"}>
               <Datagrid>
@@ -236,39 +270,34 @@ export const LongTermLoanShow = (props) => (
               </Datagrid>
             </FilterResourceList>
           </ArrayField>
-        </Tab>
-      </TabbedShowLayout>
+        </RaGrid>
+        <RaGrid item xs={12}>
+          <Divider style={{ margin: "20px 0px" }} />
+        </RaGrid>
+        <RaGrid item xs={12}>
+          <Box style={{ fontSize: "16px", fontWeight: 500 }}>
+            Interest Repayments
+          </Box>
+        </RaGrid>
+        <RaGrid item xs={12}>
+          <ArrayField label="" source="long_term_repayments">
+            <FilterResourceList filter={(el) => el.type === "INTEREST"}>
+              <Datagrid>
+                <DateField label="Installment Date" source="date" />
+                <NumberField source="amount" />
+                <TextField source="type" />
+                <LongTermRepaymentEditButton />
+              </Datagrid>
+            </FilterResourceList>
+          </ArrayField>
+        </RaGrid>
+      </RaGrid>
+    </GridShowLayout>
+  );
 
-      {/* <NumberField
-        label="Interest Installments"
-        source="long_term_repayments_aggregate.aggregate.count"
-      />
-      <NumberField
-        label="Principal Installments"
-        source="long_term_repayments_aggregate.aggregate.count"
-      />
-      <NumberField
-        label="Amount"
-        source="short_term_repayments_aggregate.aggregate.sum.amount"
-      />
-      <DateField
-        label="last payment date"
-        source="short_term_repayments_aggregate.aggregate.max.date"
-        options={{
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }}
-      /> */}
-      {/* <ArrayField label="Repayments" source="short_term_repayments">
-        <Datagrid>
-          <DateField label="Added on" source="date" />
-          <DateField label="Installment Date" source="installment_date" />
-          <NumberField source="amount" />
-          <LongTermRepaymentEditButton />
-        </Datagrid>
-      </ArrayField> */}
-    </SimpleShowLayout>
-  </Show>
-);
+  return (
+    <Show {...props} component="div" actions={<ShowActions />}>
+      <ShowSplitter leftSide={leftSide} rightSide={rightSide} />
+    </Show>
+  );
+};

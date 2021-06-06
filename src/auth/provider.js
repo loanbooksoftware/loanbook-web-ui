@@ -4,7 +4,6 @@ import config from "../config";
 const authProvider = {
   login: (params) => {
     const { username, password } = params;
-    console.log(md5(`${username}${password}`));
     if (md5(`${username}${password}`) === "2caedae59160f38e72828ab2cdce5684") {
       localStorage.setItem("token", config.token);
       return Promise.resolve();
@@ -21,7 +20,6 @@ const authProvider = {
     return Promise.resolve();
   },
   checkAuth: (params, mode = "async") => {
-    console.log("checkAuth", mode, localStorage.getItem("token"));
     if (mode === "async") {
       return localStorage.getItem("token")
         ? Promise.resolve()

@@ -59,12 +59,10 @@ const customersExtensions = [
             }
           }
           view_status {
-            repayment_amount
-            total_repayed_amount
             expected_repayment_amount
-            last_repayment_date
-            total
             recievable_amount
+            total_repayed_amount
+            total
           }
         }
         long_term_loans(order_by: { date: asc }) {
@@ -152,9 +150,6 @@ const shortTermLoansExtensions = [
             sum {
               amount
             }
-            max {
-              date
-            }
           }
         }
         short_term_repayments {
@@ -163,6 +158,13 @@ const shortTermLoansExtensions = [
           date
           created_at
           installment_date
+        }
+        view_status {
+          expected_repayment_amount
+          recievable_amount
+          total_repayed_amount
+          total
+          last_repayment_date
         }
       }
     `,
