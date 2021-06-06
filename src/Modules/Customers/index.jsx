@@ -19,8 +19,14 @@ import {
   ArrayField,
   TabbedShowLayout,
   Tab,
+  FunctionField,
+  TopToolbar,
+  EditButton,
 } from "react-admin";
+import AddIcon from "@material-ui/icons/Add";
+import Button from "@material-ui/core/Button";
 import { ShowSplitter, GridShowLayout, RaGrid } from "ra-compact-ui";
+import get from "lodash/get";
 import { Link } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import { Resources } from "../../constants/resources";
@@ -101,22 +107,69 @@ const LongTermLoanLink = (props) => {
   return <Link to={linkToLoan}>{loan.id}</Link>;
 };
 
+export const ShowActions = ({ basePath, data, resource, children }) => (
+  <TopToolbar>
+    <Button
+      component={Link}
+      to={{
+        pathname: `/${Resources.shortTermLoans}/create`,
+        search: `?source=${JSON.stringify({
+          customer_id: data?.id,
+        })}`,
+      }}
+      size="small"
+      color="primary"
+    >
+      <AddIcon />
+      New short term loan
+    </Button>
+    <Button
+      component={Link}
+      to={{
+        pathname: `/${Resources.longTermLoans}/create`,
+        search: `?source=${JSON.stringify({
+          customer_id: data?.id,
+        })}`,
+      }}
+      size="small"
+      color="primary"
+    >
+      <AddIcon />
+      New long term loan
+    </Button>
+    <EditButton basePath={basePath} record={data} />
+  </TopToolbar>
+);
+
 export const CustomerShow = (props) => {
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("xs"));
-  console.log(isMobile);
 
   const shortTermLoans = (
     <ArrayField source="short_term_loans">
       <Datagrid>
+        <ShortTermLoanLink />
         <DateField source="date" />
         <TextField source="principal_amount" />
         <TextField source="total" />
+        <TextField source="si_frequency.frequency" label="Frequency" />
         <TextField source="duration" />
         <TextField source="installment_amount" />
+        <FunctionField
+          label="Balance"
+          render={(record) =>
+            get(record, "total") -
+            get(record, "short_term_repayments_aggregate.aggregate.sum.amount")
+          }
+        />
+        <FunctionField
+          label="Balance (till date)"
+          render={(record) =>
+            get(record, "view_status.expected_repayment_amount") -
+            get(record, "view_status.repayment_amount")
+          }
+        />
         <TextField source="status" />
-        <TextField source="si_frequency.frequency" />
-        <TextField source="si_frequency.si" />
-        <ShortTermLoanLink />
+        {/* <TextField source="si_frequency.si" /> */}
       </Datagrid>
     </ArrayField>
   );
@@ -124,13 +177,13 @@ export const CustomerShow = (props) => {
   const longTermLoans = (
     <ArrayField source="long_term_loans">
       <Datagrid>
+        <LongTermLoanLink />
         <DateField source="date" />
         <NumberField source="principal_amount" />
         <NumberField source="period_interest_amount" />
-        <TextField source="si_frequency.frequency" />
-        <TextField source="si_frequency.si" />
+        {/* <TextField source="si_frequency.frequency" /> */}
+        <TextField source="si_frequency.si" label="Si" />
         {/* <TextField source="status" /> */}
-        <LongTermLoanLink />
       </Datagrid>
     </ArrayField>
   );
@@ -144,7 +197,7 @@ export const CustomerShow = (props) => {
             label="Nu of open loans"
           />
         </RaGrid>
-        <RaGrid item xs={4} sm={4}>
+        {/* <RaGrid item xs={4} sm={4}>
           <TextField
             source="credit_line.number_of_closed_loans"
             label="Nu of closed loans"
@@ -155,35 +208,26 @@ export const CustomerShow = (props) => {
             source="credit_line.number_of_error_loans"
             label="Nu of error loans"
           />
-        </RaGrid>
+        </RaGrid> */}
         <RaGrid item xs={4} sm={4}>
           <NumberField
             source="credit_line.open_loan_amount_principal"
-            label="Open principal"
+            label="Principal"
           />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
-          <NumberField
-            source="credit_line.open_loan_amount"
-            label="Open total amount"
-          />
+          <NumberField source="credit_line.open_loan_amount" label="Total" />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
           <NumberField
             source="credit_line.expected_repayment_amount"
-            label="Expected repayment amount"
+            label="Expected repayment (till date)"
           />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
           <NumberField
             source="credit_line.total_repayed_amount"
-            label="Repayment amount"
-          />
-        </RaGrid>
-        <RaGrid item xs={4} sm={4}>
-          <NumberField
-            source="credit_line.long_term_amount"
-            label="Long term amount"
+            label="Repayment (till date)"
           />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
@@ -199,14 +243,39 @@ export const CustomerShow = (props) => {
           />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
-          <NumberField source="credit_line.exposure" label="Exposure" />
+          <NumberField
+            source="credit_line.long_term_amount"
+            label="Long term amount"
+          />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
+          <FunctionField
+            label="Balance (till date)"
+            render={(record) =>
+              get(record, "credit_line.expected_repayment_amount") -
+              get(record, "credit_line.total_repayed_amount")
+            }
+          />
+        </RaGrid>
+        <RaGrid item xs={4} sm={4}>
+          <FunctionField
+            label="Balance (all time)"
+            render={(record) =>
+              get(record, "credit_line.open_loan_amount") -
+              get(record, "credit_line.total_repayed_amount")
+            }
+          />
+        </RaGrid>
+
+        {/* <RaGrid item xs={4} sm={4}>
+          <NumberField source="credit_line.exposure" label="Exposure" />
+        </RaGrid> */}
+        {/* <RaGrid item xs={4} sm={4}>
           <NumberField
             source="credit_line.short_term_repayment_shortfall"
             label="Shortfall short term (%)"
           />
-        </RaGrid>
+        </RaGrid> */}
       </RaGrid>
     </GridShowLayout>
   );
@@ -242,7 +311,7 @@ export const CustomerShow = (props) => {
   }
 
   return (
-    <Show {...props} component="div">
+    <Show {...props} component="div" actions={<ShowActions />}>
       <ShowSplitter
         leftSide={
           <GridShowLayout>

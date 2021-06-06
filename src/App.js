@@ -29,7 +29,7 @@ import {
   ShortTermRepaymentCreate,
   ShortTermRepaymentEdit,
   ShortTermRepaymentShow,
-  ShortTermRepaymentList,
+  // ShortTermRepaymentList,
 } from "./Modules/ShortTermRepayments";
 import {
   LongTermLoanList,
@@ -88,7 +88,7 @@ function App() {
         />
         <Resource
           name={Resources.shortTermRepayments}
-          list={ShortTermRepaymentList}
+          // list={ShortTermRepaymentList}
           edit={ShortTermRepaymentEdit}
           create={ShortTermRepaymentCreate}
           show={ShortTermRepaymentShow}

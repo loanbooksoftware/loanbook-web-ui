@@ -6,8 +6,10 @@ import { onError } from "apollo-link-error";
 import buildHasuraProvider from "ra-data-hasura";
 import { customBuildFields } from "./QueryExtensions";
 
-const HTTPS_URL = "https://present-garfish-33.hasura.app/v1/graphql";
-const WSS_URL = "wss://present-garfish-33.hasura.app/v1/graphql";
+import config from "../config";
+
+const HTTPS_URL = config.HTTPS_URL;
+const WSS_URL = config.WSS_URL;
 
 const provider = async () => {
   let provider;
@@ -24,6 +26,7 @@ const provider = async () => {
       uri: WSS_URL,
       options: {
         reconnect: true,
+        lazy: true,
         connectionParams: {
           headers: {
             "x-hasura-admin-secret": localStorage.getItem("token"),

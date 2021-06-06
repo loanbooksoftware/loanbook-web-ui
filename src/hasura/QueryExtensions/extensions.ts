@@ -51,6 +51,21 @@ const customersExtensions = [
             frequency
             si
           }
+          short_term_repayments_aggregate {
+            aggregate {
+              sum {
+                amount
+              }
+            }
+          }
+          view_status {
+            repayment_amount
+            total_repayed_amount
+            expected_repayment_amount
+            last_repayment_date
+            total
+            recievable_amount
+          }
         }
         long_term_loans(order_by: { date: asc }) {
           id
