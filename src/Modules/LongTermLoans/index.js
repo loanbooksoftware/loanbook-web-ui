@@ -33,6 +33,7 @@ import {
   CustomerShortDetail,
   CustomerReferenceInput,
 } from "../Customers/components";
+import { longTermRepaymentTypes } from "../../constants";
 
 import FilterResourceList from "../../RaExtensions/FilterResourceList";
 
@@ -101,7 +102,7 @@ export const LongTermLoanEdit = (props) => {
           source="si_frequency_id"
           reference={Resources.siFrequency}
         >
-          <SelectInput optionText="frequency" />
+          <SelectInput optionText="name" />
         </ReferenceInput>
         <Divider style={{ margin: "20px 0px" }} />
         <LongTermDetailsCalculated />
@@ -123,7 +124,7 @@ export const LongTermLoanCreate = (props) => {
           source="si_frequency_id"
           reference={Resources.siFrequency}
         >
-          <SelectInput optionText="frequency" />
+          <SelectInput optionText="name" />
         </ReferenceInput>
         <Divider style={{ margin: "20px 0px" }} />
         <LongTermDetailsCalculated />
@@ -150,13 +151,29 @@ export const ShowActions = ({ basePath, data, resource, children }) => (
         pathname: `/${Resources.longTermRepayments}/create`,
         search: `?source=${JSON.stringify({
           long_term_loan_id: data?.id,
+          type: longTermRepaymentTypes.INTEREST,
         })}`,
       }}
       size="small"
       color="primary"
     >
       <AddIcon />
-      Add repayments
+      Add interest repayments
+    </Button>
+    <Button
+      component={Link}
+      to={{
+        pathname: `/${Resources.longTermRepayments}/create`,
+        search: `?source=${JSON.stringify({
+          long_term_loan_id: data?.id,
+          type: longTermRepaymentTypes.PRINCIPAL,
+        })}`,
+      }}
+      size="small"
+      color="primary"
+    >
+      <AddIcon />
+      Add principal repayments
     </Button>
     <EditButton basePath={basePath} record={data} />
   </TopToolbar>

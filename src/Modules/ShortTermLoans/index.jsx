@@ -100,7 +100,7 @@ export const ShortTermLoanEdit = (props) => {
           source="si_frequency_id"
           reference={Resources.siFrequency}
         >
-          <SelectInput optionText="frequency" />
+          <SelectInput optionText="name" />
         </ReferenceInput>
         <NumberInput source="duration" />
         <Divider style={{ margin: "20px 0px" }} />
@@ -123,7 +123,7 @@ export const ShortTermLoanCreate = (props) => {
           source="si_frequency_id"
           reference={Resources.siFrequency}
         >
-          <SelectInput optionText="frequency" />
+          <SelectInput optionText="name" />
         </ReferenceInput>
         <NumberInput source="duration" />
         <Divider style={{ margin: "20px 0px" }} />

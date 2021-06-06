@@ -78,6 +78,13 @@ const customersExtensions = [
             frequency
             si
           }
+          view_status {
+            principal_amount_left
+            new_amount
+            period_interest_amount
+            si
+            frequency
+          }
         }
         credit_line {
           expected_repayment_amount

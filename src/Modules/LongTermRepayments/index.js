@@ -14,7 +14,8 @@ import {
   Datagrid,
   Toolbar,
   SaveButton,
-  TextInput,
+  SelectField,
+  RadioButtonGroupInput,
 } from "react-admin";
 import { makeStyles } from "@material-ui/core/styles";
 import ClearButton from "../../Commons";
@@ -23,6 +24,8 @@ import {
   LongTermLoanReferenceInput,
   LongTermLoanReadOnly,
 } from "../LongTermLoans/components";
+
+import { longTermRepaymentTypes } from "../../constants";
 
 const useStyles = makeStyles({
   toolbar: {
@@ -33,6 +36,11 @@ const useStyles = makeStyles({
   },
 });
 
+const longTermRepaymentOptions = [
+  { id: longTermRepaymentTypes.PRINCIPAL, name: "Principal" },
+  { id: longTermRepaymentTypes.INTEREST, name: "Interest" },
+];
+
 export const LongTermRepaymentList = (props) => (
   <List {...props} {...listExtraProps} actions={<ListActions />}>
     <Datagrid rowClick="show">
@@ -40,7 +48,7 @@ export const LongTermRepaymentList = (props) => (
       <LongTermLoanReadOnly label="Loan" />
       <DateField source="date" />
       <DateField source="installment_date" />
-      <TextField source="type" />
+      <SelectField source="type" choices={longTermRepaymentOptions} />
     </Datagrid>
   </List>
 );
@@ -76,7 +84,10 @@ export const LongTermRepaymentCreate = (props) => {
           defaultValue={Date.now()}
         />
         <NumberInput source="amount" />
-        <TextInput source="type" />
+        <RadioButtonGroupInput
+          source="type"
+          choices={longTermRepaymentOptions}
+        />
       </SimpleForm>
     </Create>
   );
@@ -98,7 +109,10 @@ export const LongTermRepaymentEdit = (props) => {
         />
         <DateInput label="Collection date" source="date" />
         <NumberInput source="amount" />
-        <TextInput source="type" />
+        <RadioButtonGroupInput
+          source="type"
+          choices={longTermRepaymentOptions}
+        />
       </SimpleForm>
     </Edit>
   );
@@ -120,7 +134,7 @@ export const LongTermRepaymentShow = (props) => (
         }}
       />
       <NumberField source="amount" />
-      <TextField source="type" />
+      <SelectField source="type" choices={longTermRepaymentOptions} />
     </SimpleShowLayout>
   </Show>
 );

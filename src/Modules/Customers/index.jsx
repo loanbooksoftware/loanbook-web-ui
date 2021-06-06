@@ -179,11 +179,14 @@ export const CustomerShow = (props) => {
       <Datagrid>
         <LongTermLoanLink />
         <DateField source="date" />
-        <NumberField source="principal_amount" />
-        <NumberField source="period_interest_amount" />
-        {/* <TextField source="si_frequency.frequency" /> */}
+        <NumberField source="principal_amount" label="Principal" />
+        <NumberField
+          source="view_status.principal_amount_left"
+          label="Principal (till date)"
+        />
+        <TextField source="si_frequency.frequency" label="Frequency" />
         <TextField source="si_frequency.si" label="Si" />
-        {/* <TextField source="status" /> */}
+        <NumberField source="view_status.new_amount" label="Interest" />
       </Datagrid>
     </ArrayField>
   );
