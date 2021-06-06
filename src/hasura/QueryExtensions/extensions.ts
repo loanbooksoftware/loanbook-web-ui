@@ -51,6 +51,19 @@ const customersExtensions = [
             frequency
             si
           }
+          short_term_repayments_aggregate {
+            aggregate {
+              sum {
+                amount
+              }
+            }
+          }
+          view_status {
+            expected_repayment_amount
+            recievable_amount
+            total_repayed_amount
+            total
+          }
         }
         long_term_loans(order_by: { date: asc }) {
           id
@@ -62,6 +75,13 @@ const customersExtensions = [
             id
             frequency
             si
+          }
+          view_status {
+            principal_amount_left
+            new_amount
+            period_interest_amount
+            si
+            frequency
           }
         }
         credit_line {
@@ -130,9 +150,6 @@ const shortTermLoansExtensions = [
             sum {
               amount
             }
-            max {
-              date
-            }
           }
         }
         short_term_repayments {
@@ -141,6 +158,13 @@ const shortTermLoansExtensions = [
           date
           created_at
           installment_date
+        }
+        view_status {
+          expected_repayment_amount
+          recievable_amount
+          total_repayed_amount
+          total
+          last_repayment_date
         }
       }
     `,

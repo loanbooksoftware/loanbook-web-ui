@@ -1,7 +1,7 @@
 import React from "react";
 import {
   linkToRecord,
-  useRecordContext,
+  // useRecordContext,
   List,
   Datagrid,
   TextField,
@@ -19,9 +19,15 @@ import {
   ArrayField,
   TabbedShowLayout,
   Tab,
+  FunctionField,
+  TopToolbar,
+  EditButton,
 } from "react-admin";
-import { ShowSplitter, GridShowLayout, RaGrid } from "ra-compact-ui";
-import { Link } from "react-router-dom";
+import AddIcon from "@material-ui/icons/Add";
+import Button from "@material-ui/core/Button";
+import { ShowSplitter, GridShowLayout, RaGrid, RaBox } from "ra-compact-ui";
+import get from "lodash/get";
+import { Link, useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import { Resources } from "../../constants/resources";
 import { useMediaQuery } from "@material-ui/core";
@@ -79,58 +85,124 @@ export const CustomerCreate = (props) => (
   </Create>
 );
 
-const ShortTermLoanLink = (props) => {
-  const loan = useRecordContext(props);
-  const linkToLoan = linkToRecord(
-    `/${Resources.shortTermLoans}`,
-    loan?.id,
-    "show"
-  );
+// const ShortTermLoanLink = (props) => {
+//   const loan = useRecordContext(props);
+//   const linkToLoan = linkToRecord(
+//     `/${Resources.shortTermLoans}`,
+//     loan?.id,
+//     "show"
+//   );
 
-  return <Link to={linkToLoan}>{loan.id}</Link>;
-};
+//   return <Link to={linkToLoan}>{loan.id}</Link>;
+// };
 
-const LongTermLoanLink = (props) => {
-  const loan = useRecordContext(props);
-  const linkToLoan = linkToRecord(
-    `/${Resources.longTermLoans}`,
-    loan?.id,
-    "show"
-  );
+// const LongTermLoanLink = (props) => {
+//   const loan = useRecordContext(props);
+//   const linkToLoan = linkToRecord(
+//     `/${Resources.longTermLoans}`,
+//     loan?.id,
+//     "show"
+//   );
 
-  return <Link to={linkToLoan}>{loan.id}</Link>;
-};
+//   return <Link to={linkToLoan}>{loan.id}</Link>;
+// };
+
+export const ShowActions = ({ basePath, data, resource, children }) => (
+  <TopToolbar>
+    <Button
+      component={Link}
+      to={{
+        pathname: `/${Resources.shortTermLoans}/create`,
+        search: `?source=${JSON.stringify({
+          customer_id: data?.id,
+        })}`,
+      }}
+      size="small"
+      color="primary"
+    >
+      <AddIcon />
+      New short term loan
+    </Button>
+    <Button
+      component={Link}
+      to={{
+        pathname: `/${Resources.longTermLoans}/create`,
+        search: `?source=${JSON.stringify({
+          customer_id: data?.id,
+        })}`,
+      }}
+      size="small"
+      color="primary"
+    >
+      <AddIcon />
+      New long term loan
+    </Button>
+    <EditButton basePath={basePath} record={data} />
+  </TopToolbar>
+);
 
 export const CustomerShow = (props) => {
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("xs"));
-  console.log(isMobile);
+  const history = useHistory();
 
   const shortTermLoans = (
-    <ArrayField source="short_term_loans">
-      <Datagrid>
+    <ArrayField
+      source="short_term_loans"
+      label={isMobile ? "" : "Short term loans"}
+    >
+      <Datagrid
+        rowClick={(id, path, record) => {
+          const linkToLoan = linkToRecord(
+            `/${Resources.shortTermLoans}`,
+            record?.id,
+            "show"
+          );
+          history.push(linkToLoan);
+        }}
+      >
         <DateField source="date" />
         <TextField source="principal_amount" />
         <TextField source="total" />
+        <TextField source="si_frequency.frequency" label="Frequency" />
         <TextField source="duration" />
         <TextField source="installment_amount" />
+        <TextField source="view_status.recievable_amount" label="Balance" />
+        <FunctionField
+          label="Balance (till date)"
+          render={(record) =>
+            get(record, "view_status.expected_repayment_amount") -
+            get(record, "view_status.total_repayed_amount")
+          }
+        />
         <TextField source="status" />
-        <TextField source="si_frequency.frequency" />
-        <TextField source="si_frequency.si" />
-        <ShortTermLoanLink />
       </Datagrid>
     </ArrayField>
   );
 
   const longTermLoans = (
-    <ArrayField source="long_term_loans">
-      <Datagrid>
+    <ArrayField
+      label={isMobile ? "" : "Long term loans"}
+      source="long_term_loans"
+    >
+      <Datagrid
+        rowClick={(id, path, record) => {
+          const linkToLoan = linkToRecord(
+            `/${Resources.longTermLoans}`,
+            record?.id,
+            "show"
+          );
+          history.push(linkToLoan);
+        }}
+      >
         <DateField source="date" />
-        <NumberField source="principal_amount" />
-        <NumberField source="period_interest_amount" />
-        <TextField source="si_frequency.frequency" />
-        <TextField source="si_frequency.si" />
-        {/* <TextField source="status" /> */}
-        <LongTermLoanLink />
+        <NumberField source="principal_amount" label="Principal" />
+        <TextField source="si_frequency.si" label="Si" />
+        <NumberField
+          source="view_status.principal_amount_left"
+          label="Principal (till date)"
+        />
+        <TextField source="si_frequency.frequency" label="Frequency" />
+        <NumberField source="view_status.new_amount" label="Amount" />
       </Datagrid>
     </ArrayField>
   );
@@ -145,45 +217,24 @@ export const CustomerShow = (props) => {
           />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
-          <TextField
-            source="credit_line.number_of_closed_loans"
-            label="Nu of closed loans"
-          />
-        </RaGrid>
-        <RaGrid item xs={4} sm={4}>
-          <TextField
-            source="credit_line.number_of_error_loans"
-            label="Nu of error loans"
-          />
-        </RaGrid>
-        <RaGrid item xs={4} sm={4}>
           <NumberField
             source="credit_line.open_loan_amount_principal"
-            label="Open principal"
+            label="Principal"
           />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
-          <NumberField
-            source="credit_line.open_loan_amount"
-            label="Open total amount"
-          />
+          <NumberField source="credit_line.open_loan_amount" label="Total" />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
           <NumberField
             source="credit_line.expected_repayment_amount"
-            label="Expected repayment amount"
+            label="Expected repayment (till date)"
           />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
           <NumberField
             source="credit_line.total_repayed_amount"
-            label="Repayment amount"
-          />
-        </RaGrid>
-        <RaGrid item xs={4} sm={4}>
-          <NumberField
-            source="credit_line.long_term_amount"
-            label="Long term amount"
+            label="Repayment (till date)"
           />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
@@ -199,14 +250,39 @@ export const CustomerShow = (props) => {
           />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
-          <NumberField source="credit_line.exposure" label="Exposure" />
+          <NumberField
+            source="credit_line.long_term_amount"
+            label="Long term amount"
+          />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
+          <FunctionField
+            label="Balance (till date)"
+            render={(record) =>
+              get(record, "credit_line.expected_repayment_amount") -
+              get(record, "credit_line.total_repayed_amount")
+            }
+          />
+        </RaGrid>
+        <RaGrid item xs={4} sm={4}>
+          <FunctionField
+            label="Balance (all time)"
+            render={(record) =>
+              get(record, "credit_line.open_loan_amount") -
+              get(record, "credit_line.total_repayed_amount")
+            }
+          />
+        </RaGrid>
+
+        {/* <RaGrid item xs={4} sm={4}>
+          <NumberField source="credit_line.exposure" label="Exposure" />
+        </RaGrid> */}
+        {/* <RaGrid item xs={4} sm={4}>
           <NumberField
             source="credit_line.short_term_repayment_shortfall"
             label="Shortfall short term (%)"
           />
-        </RaGrid>
+        </RaGrid> */}
       </RaGrid>
     </GridShowLayout>
   );
@@ -218,12 +294,14 @@ export const CustomerShow = (props) => {
         <GridShowLayout>
           <Typography variant="h6">Credit Line</Typography>
           {creditLineInfo}
-        </GridShowLayout>
-        <GridShowLayout>
-          <Typography variant="h6">Credit Line</Typography>
-          {shortTermLoans}
-          <Typography variant="h6">Credit Line</Typography>
-          {longTermLoans}
+          <RaBox mb={4}>
+            <Typography variant="h6">Short term loans</Typography>
+            {shortTermLoans}
+          </RaBox>
+          <RaBox>
+            <Typography variant="h6">Long term loans</Typography>
+            {longTermLoans}
+          </RaBox>
         </GridShowLayout>
       </>
     );
@@ -242,7 +320,7 @@ export const CustomerShow = (props) => {
   }
 
   return (
-    <Show {...props} component="div">
+    <Show {...props} component="div" actions={<ShowActions />}>
       <ShowSplitter
         leftSide={
           <GridShowLayout>

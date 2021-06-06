@@ -22,17 +22,5 @@ export const customBuildFields = (type, fetchType) => {
 };
 
 export const customBuildArgs = (queryType, variables) => {
-  // const resourceName = type.name;
-  // console.log(resourceName, fetchType, type);
-  // const defaultFields = buildFields(type, fetchType);
-  // const extendedObj = extensions.find(
-  //   (el) => el.resourceName === resourceName && el.fetchType === fetchType
-  // );
-  // console.log(extendedObj);
-  // if (extendedObj) {
-  //   const relatedEntities = extractFieldsFromQuery(extendedObj.query);
-  //   defaultFields.push(...relatedEntities);
-  // }
-  // return defaultFields;
   return variables;
 };
