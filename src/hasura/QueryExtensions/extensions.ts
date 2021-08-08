@@ -83,6 +83,11 @@ const customersExtensions = [
             si
             frequency
           }
+          balance_view {
+            balance
+            date_actual
+            remaining_principle
+          }
         }
         credit_line {
           expected_repayment_amount
@@ -334,6 +339,11 @@ const longTermLoansExtensions = [
           amount
           type
           id
+        }
+        balance_view {
+          balance
+          date_actual
+          remaining_principle
         }
       }
     `,
