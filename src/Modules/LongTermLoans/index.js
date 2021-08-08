@@ -20,7 +20,9 @@ import {
   SelectInput,
   EditButton,
   Link,
+  FunctionField,
 } from "react-admin";
+import get from "lodash/get";
 import { ShowSplitter, GridShowLayout, RaGrid } from "ra-compact-ui";
 import Typography from "@material-ui/core/Typography";
 import AddIcon from "@material-ui/icons/Add";
@@ -228,6 +230,18 @@ export const LongTermLoanShow = (props) => {
           <TextField
             source="view_status.new_amount"
             label="New interest amount"
+          />
+        </RaGrid>
+        <RaGrid item xs={6}>
+          <FunctionField
+            label="Balance (till date)"
+            render={(record) => {
+              const longTermBalances = get(record, "balance_view", []);
+              if (longTermBalances.length > 0) {
+                return longTermBalances[longTermBalances.length - 1].balance;
+              }
+              return 0;
+            }}
           />
         </RaGrid>
         <RaGrid item xs={12}>

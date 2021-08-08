@@ -197,12 +197,22 @@ export const CustomerShow = (props) => {
         <DateField source="date" />
         <NumberField source="principal_amount" label="Principal" />
         <TextField source="si_frequency.si" label="Si" />
+        <TextField source="si_frequency.frequency" label="Frequency" />
+        <NumberField source="view_status.new_amount" label="Amount" />
         <NumberField
           source="view_status.principal_amount_left"
           label="Principal (till date)"
         />
-        <TextField source="si_frequency.frequency" label="Frequency" />
-        <NumberField source="view_status.new_amount" label="Amount" />
+        <FunctionField
+          label="Balance (till date)"
+          render={(record) => {
+            const longTermBalances = get(record, "balance_view", []);
+            if (longTermBalances.length > 0) {
+              return longTermBalances[longTermBalances.length - 1].balance;
+            }
+            return 0;
+          }}
+        />
       </Datagrid>
     </ArrayField>
   );
@@ -258,19 +268,68 @@ export const CustomerShow = (props) => {
         <RaGrid item xs={4} sm={4}>
           <FunctionField
             label="Balance (till date)"
-            render={(record) =>
-              get(record, "credit_line.expected_repayment_amount") -
-              get(record, "credit_line.total_repayed_amount")
-            }
+            render={(record) => {
+              const shortTermBalance =
+                get(record, "credit_line.expected_repayment_amount", 0) -
+                get(record, "credit_line.total_repayed_amount", 0);
+              const longTermBalance = get(record, "long_term_loans", [])
+                .map((el) => {
+                  if (el.balance_view && el.balance_view.length > 0) {
+                    return el.balance_view[el.balance_view.length - 1].balance;
+                  }
+                  return 0;
+                })
+                .reduce((prev, el) => {
+                  return prev + el;
+                }, 0);
+
+              return `${
+                shortTermBalance + longTermBalance
+              } (${shortTermBalance} Short term  + ${longTermBalance} Long term)`;
+            }}
           />
         </RaGrid>
         <RaGrid item xs={4} sm={4}>
           <FunctionField
             label="Balance (all time)"
-            render={(record) =>
-              get(record, "credit_line.open_loan_amount") -
-              get(record, "credit_line.total_repayed_amount")
-            }
+            render={(record) => {
+              const shortTermBalance =
+                get(record, "credit_line.open_loan_amount") -
+                get(record, "credit_line.total_repayed_amount");
+
+              const longTermBalanceInterest = get(record, "long_term_loans", [])
+                .map((el) => {
+                  if (el.balance_view && el.balance_view.length > 0) {
+                    return el.balance_view[el.balance_view.length - 1].balance;
+                  }
+                  return 0;
+                })
+                .reduce((prev, el) => {
+                  return prev + el;
+                }, 0);
+
+              const longTermBalancePrincipal = get(
+                record,
+                "long_term_loans",
+                []
+              )
+                .map((el) => {
+                  if (el.balance_view && el.balance_view.length > 0) {
+                    return el.balance_view[el.balance_view.length - 1]
+                      .remaining_principle;
+                  }
+                  return 0;
+                })
+                .reduce((prev, el) => {
+                  return prev + el;
+                }, 0);
+
+              return `${
+                shortTermBalance +
+                longTermBalanceInterest +
+                longTermBalancePrincipal
+              } (${shortTermBalance} short term + ${longTermBalanceInterest} long term interest + ${longTermBalancePrincipal} long term principal)`;
+            }}
           />
         </RaGrid>
 
