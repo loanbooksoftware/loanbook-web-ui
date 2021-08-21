@@ -6,7 +6,7 @@ import { Title } from "react-admin";
 export default function Dashboard() {
   return (
     <Card>
-      <Title title="Daily Finance PRO" />
+      <Title title="Loan book software" />
       <CardContent>Lorem ipsum sic dolor amet...</CardContent>
     </Card>
   );
