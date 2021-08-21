@@ -2,7 +2,6 @@ import React from "react";
 import {
   linkToRecord,
   List,
-  Datagrid,
   TextField,
   TopToolbar,
   CreateButton,
@@ -172,15 +171,6 @@ export const LongTermLoanCreate = (props) => {
         <NumberInput source="period_interest_amount" />
       </SimpleForm>
     </Create>
-  );
-};
-
-const LongTermRepaymentEditButton = ({ record }) => {
-  return (
-    <EditButton
-      basePath={`/${Resources.longTermRepayments}/${record.id}`}
-      record={record}
-    />
   );
 };
 
