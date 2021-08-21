@@ -10,9 +10,15 @@ import { Resources } from "../../constants/resources";
 import { CustomerShortDetailsRenderer } from "../../Commons";
 
 export const CustomerShortDetail = (props) => {
-  const { path } = props;
+  const { path, variant } = props;
   const record = useRecordContext(props);
-  return <CustomerShortDetailsRenderer record={record} path={path} />;
+  return (
+    <CustomerShortDetailsRenderer
+      record={record}
+      path={path}
+      variant={variant}
+    />
+  );
 };
 
 CustomerShortDetail.defaultProps = { label: "Referrer", addLabel: true };

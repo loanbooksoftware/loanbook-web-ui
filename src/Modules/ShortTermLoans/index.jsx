@@ -1,7 +1,7 @@
 import React from "react";
 import {
+  linkToRecord,
   List,
-  Datagrid,
   TextField,
   TopToolbar,
   CreateButton,
@@ -16,15 +16,16 @@ import {
   NumberInput,
   NumberField,
   DateField,
-  ArrayField,
   SelectInput,
   EditButton,
   Link,
   FunctionField,
 } from "react-admin";
 import get from "lodash/get";
-import { ShowSplitter, GridShowLayout, RaGrid } from "ra-compact-ui";
+import { ShowSplitter, GridShowLayout, RaGrid, RaBox } from "ra-compact-ui";
 import Typography from "@material-ui/core/Typography";
+import { useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
 
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
@@ -41,6 +42,9 @@ import {
   listExtraProps,
   EditActions,
   CustomerReadOnly,
+  CardList,
+  Label,
+  ArrayField,
 } from "../../Commons";
 import { DetailsCalculated } from "./components";
 
@@ -64,18 +68,64 @@ export const ShortTermLoanList = (props) => (
       </ListActions>
     }
   >
-    <Datagrid rowClick="show">
-      <TextField source="id" />
-      <CustomerShortDetail path="customer" label="Customer" />
-      <DateField source="date" />
-      <NumberField source="principal_amount" />
-      <NumberField source="installment_amount" />
-      <NumberField source="duration" />
-      <TextField label="frequency" source="si_frequency.frequency" />
-      <TextField label="SI" source="si_frequency.si" />
-      <TextField source="status" />
-      <NumberField source="total" />
-    </Datagrid>
+    <Box px={2}>
+      <CardList
+        linkType="show"
+        title={
+          <RaBox display="inline-flex" alignItems="center">
+            <CustomerShortDetail
+              path="customer"
+              label="Customer"
+              variant="h6"
+            />
+            <Divider orientation="vertical" flexItem variant="middle" />
+            <DateField source="date" variant="h6" />
+          </RaBox>
+        }
+        subHeader={
+          <FunctionField
+            ml={1}
+            render={(record) =>
+              `${get(record, "duration")}
+            (${get(record, "si_frequency.frequency")})`
+            }
+          />
+        }
+      >
+        <RaGrid container spacing={1}>
+          <RaGrid item xs={6}>
+            <Label label="Id">
+              <TextField source="id" />
+            </Label>
+          </RaGrid>
+          <RaGrid item xs={6}>
+            <Label label="Principal Amount">
+              <NumberField source="principal_amount" />
+            </Label>
+          </RaGrid>
+          <RaGrid item xs={6}>
+            <Label label="Installment amount">
+              <NumberField source="installment_amount" />
+            </Label>
+          </RaGrid>
+          <RaGrid item xs={6}>
+            <Label label="SI">
+              <TextField label="SI" source="si_frequency.si" />
+            </Label>
+          </RaGrid>
+          <RaGrid item xs={6}>
+            <Label label="Status">
+              <TextField source="status" />
+            </Label>
+          </RaGrid>
+          <RaGrid item xs={6}>
+            <Label label="Total">
+              <TextField source="total" />
+            </Label>
+          </RaGrid>
+        </RaGrid>
+      </CardList>
+    </Box>
   </List>
 );
 
@@ -138,36 +188,46 @@ export const ShortTermLoanCreate = (props) => {
   );
 };
 
-const ShortTermRepaymentEditButton = ({ record }) => {
+export const ShowActions = ({ basePath, data, resource, children }) => {
+  const classes = useStyles();
   return (
-    <EditButton
-      basePath={`/${Resources.shortTermRepayments}/${record.id}`}
-      record={record}
-    />
+    <TopToolbar className={classes.toolbar}>
+      <Button
+        component={Link}
+        to={{
+          pathname: `/${Resources.shortTermRepayments}/create`,
+          search: `?source=${JSON.stringify({
+            short_term_loan_id: data?.id,
+          })}`,
+        }}
+        size="small"
+        color="primary"
+      >
+        <AddIcon />
+        Add repayments
+      </Button>
+      <EditButton basePath={basePath} record={data} />
+    </TopToolbar>
   );
 };
 
-export const ShowActions = ({ basePath, data, resource, children }) => (
-  <TopToolbar>
-    <Button
-      component={Link}
-      to={{
-        pathname: `/${Resources.shortTermRepayments}/create`,
-        search: `?source=${JSON.stringify({
-          short_term_loan_id: data?.id,
-        })}`,
-      }}
-      size="small"
-      color="primary"
-    >
-      <AddIcon />
-      Add repayments
-    </Button>
-    <EditButton basePath={basePath} record={data} />
-  </TopToolbar>
-);
+const useStyles = makeStyles((theme) => ({
+  root: {
+    marginBottom: theme.spacing(2),
+  },
+  repaymentList: {
+    paddingLeft: "0px",
+    paddingRight: "0px",
+  },
+  toolbar: {
+    alignItems: "center",
+  },
+}));
 
 export const ShortTermLoanShow = (props) => {
+  const history = useHistory();
+  const classes = useStyles();
+
   const leftSide = (
     <GridShowLayout>
       <Typography variant="h6">Details</Typography>
@@ -263,24 +323,65 @@ export const ShortTermLoanShow = (props) => {
   );
 
   const rightSide = (
-    <GridShowLayout>
+    <>
       <Typography variant="h6">Repayments</Typography>
-      <RaGrid item xs={12}>
-        <ArrayField label="" source="short_term_repayments">
-          <Datagrid>
-            <DateField label="Added on" source="date" />
-            <DateField label="Installment Date" source="installment_date" />
-            <NumberField source="amount" />
-            <ShortTermRepaymentEditButton />
-          </Datagrid>
-        </ArrayField>
-      </RaGrid>
-    </GridShowLayout>
+      <ArrayField label="" source="short_term_repayments">
+        <CardList
+          linkType="show"
+          rowClick={(id, path, record) => {
+            const linkToLoan = linkToRecord(
+              `/${Resources.shortTermRepayments}`,
+              record?.id,
+              "edit"
+            );
+            history.push(linkToLoan);
+          }}
+          className={classes.repaymentList}
+        >
+          <RaGrid container spacing={1}>
+            <RaGrid item xs={4}>
+              <Label label="Added on">
+                <DateField source="date" />
+              </Label>
+            </RaGrid>
+            <RaGrid item xs={4}>
+              <Label label="Installment Date">
+                <DateField source="installment_date" />
+              </Label>
+            </RaGrid>
+            <RaGrid item xs={4}>
+              <Label label="Amount">
+                <NumberField source="amount" />
+              </Label>
+            </RaGrid>
+          </RaGrid>
+        </CardList>
+      </ArrayField>
+    </>
   );
 
   return (
-    <Show {...props} component="div" actions={<ShowActions />}>
-      <ShowSplitter leftSide={leftSide} rightSide={rightSide} />
+    <Show
+      {...props}
+      component="div"
+      actions={<ShowActions />}
+      className={classes.root}
+    >
+      <Box p={2}>
+        <ShowSplitter
+          leftSide={leftSide}
+          rightSide={rightSide}
+          rightSideProps={{
+            md: 8,
+            xs: 12,
+            component: "div",
+          }}
+          leftSideProps={{
+            md: 4,
+            xs: 12,
+          }}
+        />
+      </Box>
     </Show>
   );
 };

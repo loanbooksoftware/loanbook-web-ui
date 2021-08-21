@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import InputLabel from "@material-ui/core/InputLabel";
+import Typography from "@material-ui/core/Typography";
 import {
   linkToRecord,
   useListContext,
@@ -144,6 +145,7 @@ export const listExtraProps = {
   perPage: 50,
   bulkActionButtons: false,
   sort: { field: "id", order: "DESC" },
+  component: "div",
 };
 
 export const EditActions = ({ basePath, data }) => (
@@ -153,18 +155,25 @@ export const EditActions = ({ basePath, data }) => (
   </TopToolbar>
 );
 
-export const CustomerShortDetailsRenderer = ({ record, path }) => {
+export const CustomerShortDetailsRenderer = ({ record, path, variant }) => {
   const linkToCustomer = linkToRecord(
     `/${Resources.customers}`,
     get(record, `${path}.id`),
     "show"
   );
 
+  const name = `${get(record, `${path}.first_name`, "")} ${get(
+    record,
+    `${path}.last_name`,
+    ""
+  )}`.trim();
+
   return (
     <StopEventPropagation>
-      <Link to={linkToCustomer}>
-        {get(record, `${path}.first_name`)} {get(record, `${path}.last_name`)}
-      </Link>
+      <Typography component="span" variant={variant || "body2"}>
+        {name && <Link to={linkToCustomer}>{name}</Link>}
+        {!name && "-"}
+      </Typography>
     </StopEventPropagation>
   );
 };
@@ -187,3 +196,28 @@ export const CustomerReadOnly = (props) => {
     </Box>
   );
 };
+
+const useStylesLabel = makeStyles(
+  (theme) => ({
+    labelText: {
+      fontSize: "0.7rem",
+      lineHeight: 1,
+      fontWeight: 500,
+      color: "#718473",
+    },
+  }),
+  { name: "Label" }
+);
+
+export function Label({ label, children, ...rest }) {
+  const classes = useStylesLabel();
+  return (
+    <Box>
+      <Box className={classes.labelText}>{label}</Box>
+      {React.cloneElement(children, { ...rest })}
+    </Box>
+  );
+}
+
+export { default as CardList } from "./CardList";
+export { default as ArrayField } from "./ArrayField/index.tsx";
