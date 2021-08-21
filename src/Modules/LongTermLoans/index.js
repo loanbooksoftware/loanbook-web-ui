@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  linkToRecord,
   List,
   Datagrid,
   TextField,
@@ -23,7 +24,8 @@ import {
   FunctionField,
 } from "react-admin";
 import get from "lodash/get";
-import { ShowSplitter, GridShowLayout, RaGrid } from "ra-compact-ui";
+import { useHistory } from "react-router-dom";
+import { ShowSplitter, GridShowLayout, RaGrid, RaBox } from "ra-compact-ui";
 import Typography from "@material-ui/core/Typography";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
@@ -43,6 +45,8 @@ import {
   listExtraProps,
   EditActions,
   CustomerReadOnly,
+  CardList,
+  Label,
 } from "../../Commons";
 import { LongTermDetailsCalculated } from "./components";
 
@@ -66,15 +70,51 @@ export const LongTermLoanList = (props) => (
       </ListActions>
     }
   >
-    <Datagrid rowClick="show">
-      <TextField source="id" />
-      <CustomerShortDetail path="customer" label="Customer" />
-      <DateField source="date" />
-      <NumberField source="principal_amount" />
-      <NumberField source="period_interest_amount" />
-      <TextField label="frequency" source="si_frequency.frequency" />
-      <TextField label="SI" source="si_frequency.si" />
-    </Datagrid>
+    <Box px={2}>
+      <CardList
+        linkType="show"
+        title={
+          <RaBox display="inline-flex" alignItems="center">
+            <CustomerShortDetail
+              path="customer"
+              label="Customer"
+              variant="h6"
+            />
+            <Divider orientation="vertical" flexItem variant="middle" />
+            <DateField source="date" variant="h6" />
+          </RaBox>
+        }
+        subHeader={
+          <FunctionField
+            ml={2}
+            render={(record) => `${get(record, "si_frequency.frequency")}`}
+          />
+        }
+      >
+        <RaGrid container spacing={1}>
+          <RaGrid item xs={6}>
+            <Label label="Id">
+              <TextField source="id" />
+            </Label>
+          </RaGrid>
+          <RaGrid item xs={6}>
+            <Label label="Principal Amount">
+              <NumberField source="principal_amount" />
+            </Label>
+          </RaGrid>
+          <RaGrid item xs={6}>
+            <Label label="Interest amount">
+              <NumberField source="period_interest_amount" />
+            </Label>
+          </RaGrid>
+          <RaGrid item xs={6}>
+            <Label label="SI">
+              <TextField source="si_frequency.si" />
+            </Label>
+          </RaGrid>
+        </RaGrid>
+      </CardList>
+    </Box>
   </List>
 );
 
@@ -181,6 +221,8 @@ export const ShowActions = ({ basePath, data, resource, children }) => (
 );
 
 export const LongTermLoanShow = (props) => {
+  const history = useHistory();
+
   const leftSide = (
     <GridShowLayout>
       <Typography variant="h6">Details</Typography>
@@ -266,52 +308,93 @@ export const LongTermLoanShow = (props) => {
     </GridShowLayout>
   );
   const rightSide = (
-    <GridShowLayout>
-      <RaGrid container spacing={1}>
-        <RaGrid item xs={12}>
-          <Box style={{ fontSize: "16px", fontWeight: 500 }}>
-            Principal Repayments
-          </Box>
-        </RaGrid>
-        <RaGrid item xs={12}>
-          <ArrayField label="" source="long_term_repayments">
-            <FilterResourceList filter={(el) => el.type === "PRINCIPAL"}>
-              <Datagrid>
-                <DateField label="Installment Date" source="date" />
-                <NumberField source="amount" />
-                <TextField source="type" />
-                <LongTermRepaymentEditButton />
-              </Datagrid>
-            </FilterResourceList>
-          </ArrayField>
-        </RaGrid>
-        <RaGrid item xs={12}>
-          <Divider style={{ margin: "20px 0px" }} />
-        </RaGrid>
-        <RaGrid item xs={12}>
-          <Box style={{ fontSize: "16px", fontWeight: 500 }}>
-            Interest Repayments
-          </Box>
-        </RaGrid>
-        <RaGrid item xs={12}>
-          <ArrayField label="" source="long_term_repayments">
-            <FilterResourceList filter={(el) => el.type === "INTEREST"}>
-              <Datagrid>
-                <DateField label="Installment Date" source="date" />
-                <NumberField source="amount" />
-                <TextField source="type" />
-                <LongTermRepaymentEditButton />
-              </Datagrid>
-            </FilterResourceList>
-          </ArrayField>
-        </RaGrid>
-      </RaGrid>
-    </GridShowLayout>
+    <>
+      <RaBox mb={4}>
+        <Box style={{ fontSize: "16px", fontWeight: 500 }}>
+          Principal Repayments
+        </Box>
+        <ArrayField label="" source="long_term_repayments">
+          <FilterResourceList filter={(el) => el.type === "PRINCIPAL"}>
+            <CardList
+              linkType="show"
+              rowClick={(id, path, record) => {
+                const linkToLoan = linkToRecord(
+                  `/${Resources.longTermRepayments}`,
+                  record?.id,
+                  "edit"
+                );
+                history.push(linkToLoan);
+              }}
+            >
+              <RaGrid container spacing={1}>
+                <RaGrid item xs={6}>
+                  <Label label="Installment Date">
+                    <DateField source="date" />
+                  </Label>
+                </RaGrid>
+                <RaGrid item xs={6}>
+                  <Label label="Amount">
+                    <NumberField source="amount" />
+                  </Label>
+                </RaGrid>
+              </RaGrid>
+            </CardList>
+          </FilterResourceList>
+        </ArrayField>
+      </RaBox>
+      <RaBox mb={4}>
+        <Box style={{ fontSize: "16px", fontWeight: 500 }}>
+          Interest Repayments
+        </Box>
+        <ArrayField label="" source="long_term_repayments">
+          <FilterResourceList filter={(el) => el.type === "INTEREST"}>
+            <CardList
+              linkType="show"
+              rowClick={(id, path, record) => {
+                const linkToLoan = linkToRecord(
+                  `/${Resources.longTermRepayments}`,
+                  record?.id,
+                  "edit"
+                );
+                history.push(linkToLoan);
+              }}
+            >
+              <RaGrid container spacing={1}>
+                <RaGrid item xs={6}>
+                  <Label label="Installment Date">
+                    <DateField source="date" />
+                  </Label>
+                </RaGrid>
+                <RaGrid item xs={6}>
+                  <Label label="Amount">
+                    <NumberField source="amount" />
+                  </Label>
+                </RaGrid>
+              </RaGrid>
+            </CardList>
+          </FilterResourceList>
+        </ArrayField>
+      </RaBox>
+    </>
   );
 
   return (
     <Show {...props} component="div" actions={<ShowActions />}>
-      <ShowSplitter leftSide={leftSide} rightSide={rightSide} />
+      <Box p={2}>
+        <ShowSplitter
+          leftSide={leftSide}
+          rightSide={rightSide}
+          rightSideProps={{
+            md: 8,
+            xs: 12,
+            component: "div",
+          }}
+          leftSideProps={{
+            md: 4,
+            xs: 12,
+          }}
+        />
+      </Box>
     </Show>
   );
 };
