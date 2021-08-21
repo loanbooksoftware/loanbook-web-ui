@@ -215,10 +215,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     marginBottom: theme.spacing(2),
   },
-  repaymentList: {
-    paddingLeft: "0px",
-    paddingRight: "0px",
-  },
   toolbar: {
     alignItems: "center",
   },
@@ -336,7 +332,6 @@ export const ShortTermLoanShow = (props) => {
             );
             history.push(linkToLoan);
           }}
-          className={classes.repaymentList}
         >
           <RaGrid container spacing={1}>
             <RaGrid item xs={4}>

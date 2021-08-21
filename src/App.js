@@ -10,6 +10,7 @@ import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import provider from "./hasura";
 import authProvider from "./auth/provider";
 import ErrorBoundary from "./Commons/ErrorBoundary";
+import { useMediaQuery } from "@material-ui/core";
 
 import Dashboard from "./Modules/Dashboard";
 import NotFound from "./notFound";
@@ -50,6 +51,7 @@ import { ViewLongTermStatusList } from "./Modules/ViewLongTermStatus";
 
 function App() {
   const [dataProvider, setDataProvider] = useState(null);
+  const isMobile = useMediaQuery((theme) => "(max-width:1024px)");
 
   useEffect(() => {
     const buildDataProvider = async () => {
@@ -88,7 +90,7 @@ function App() {
         />
         <Resource
           name={Resources.shortTermRepayments}
-          // list={ShortTermRepaymentList}
+          // list={isMobile ? null : ShortTermRepaymentList}
           edit={ShortTermRepaymentEdit}
           create={ShortTermRepaymentCreate}
           show={ShortTermRepaymentShow}
@@ -96,7 +98,7 @@ function App() {
         <Resource
           name={Resources.viewShortTermStatus}
           options={{ label: "Short term status" }}
-          list={ViewShortTermStatusList}
+          list={isMobile ? null : ViewShortTermStatusList}
           icon={PollIcon}
           create={false}
         />
@@ -110,7 +112,7 @@ function App() {
         />
         <Resource
           name={Resources.longTermRepayments}
-          list={LongTermRepaymentList}
+          list={isMobile ? null : LongTermRepaymentList}
           edit={LongTermRepaymentEdit}
           create={LongTermRepaymentCreate}
           show={LongTermRepaymentShow}
@@ -119,7 +121,7 @@ function App() {
         <Resource
           name={Resources.viewLongTermStatus}
           options={{ label: "Long term status" }}
-          list={ViewLongTermStatusList}
+          list={isMobile ? null : ViewLongTermStatusList}
           icon={TimelineIcon}
           create={false}
         />
